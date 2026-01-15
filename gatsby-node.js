@@ -8,9 +8,23 @@ exports.createSchemaCustomization = ({ actions }) => {
       name: String
       platform: String
       shortDescription: String
+      previewImage: SanityImage
+      guidelines: String
+      usage: String
+      dosAndDonts: String
+      accessibilityInfo: String
+      status: String
       figmaLink: String
       githubLink: String
       slug: SanitySlug
+    }
+
+    type SanityImage {
+      asset: SanityAsset
+    }
+
+    type SanityAsset {
+      url: String
     }
 
     type SanitySlug {

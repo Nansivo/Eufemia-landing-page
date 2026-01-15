@@ -75,6 +75,16 @@ const ComparisonPage: React.FC = () => {
                     platform
                     shortDescription
                     _rawDocumentation
+                    previewImage {
+                      asset {
+                        url
+                      }
+                    }
+                    guidelines
+                    usage
+                    dosAndDonts
+                    accessibilityInfo
+                    status
                     figmaLink
                     githubLink
                     slug {
