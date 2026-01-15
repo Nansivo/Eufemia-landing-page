@@ -1,0 +1,424 @@
+{
+  "generated": "2026-01-15T13:45:13.875Z",
+  "source": "https://github.com/dnbexperience/eufemia",
+  "baseUrl": "https://eufemia.dnb.no/uilib/components",
+  "count": 52,
+  "components": [
+    {
+      "slug": "accordion",
+      "name": "Accordion",
+      "description": "Expandable content sections",
+      "path": "https://eufemia.dnb.no/uilib/components/accordion/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "anchor",
+      "name": "Anchor",
+      "description": "Styled link component",
+      "path": "https://eufemia.dnb.no/uilib/components/anchor/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "aria-live",
+      "name": "Aria Live",
+      "description": "Announce dynamic content to screen readers",
+      "path": "https://eufemia.dnb.no/uilib/components/aria-live/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "autocomplete",
+      "name": "Autocomplete",
+      "description": "Input with suggestions and filtering",
+      "path": "https://eufemia.dnb.no/uilib/components/autocomplete/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "avatar",
+      "name": "Avatar",
+      "description": "Display user profile images or initials",
+      "path": "https://eufemia.dnb.no/uilib/components/avatar/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "badge",
+      "name": "Badge",
+      "description": "Small status indicator or counter",
+      "path": "https://eufemia.dnb.no/uilib/components/badge/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "breadcrumb",
+      "name": "Breadcrumb",
+      "description": "Navigation trail showing page hierarchy",
+      "path": "https://eufemia.dnb.no/uilib/components/breadcrumb/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "button",
+      "name": "Button",
+      "description": "Trigger actions or navigate to new pages",
+      "path": "https://eufemia.dnb.no/uilib/components/button/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "card",
+      "name": "Card",
+      "description": "Container for grouping related content",
+      "path": "https://eufemia.dnb.no/uilib/components/card/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "checkbox",
+      "name": "Checkbox",
+      "description": "Select one or more options",
+      "path": "https://eufemia.dnb.no/uilib/components/checkbox/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "copy-on-click",
+      "name": "Copy on Click",
+      "description": "Copy text to clipboard on interaction",
+      "path": "https://eufemia.dnb.no/uilib/components/copy-on-click/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "country-flag",
+      "name": "Country Flag",
+      "description": "Display country flag icons",
+      "path": "https://eufemia.dnb.no/uilib/components/country-flag/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "date-format",
+      "name": "Date Format",
+      "description": "Format dates according to locale",
+      "path": "https://eufemia.dnb.no/uilib/components/date-format/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "date-picker",
+      "name": "DatePicker",
+      "description": "Select dates from a calendar interface",
+      "path": "https://eufemia.dnb.no/uilib/components/date-picker/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "dialog",
+      "name": "Dialog",
+      "description": "Modal dialog for confirmations and alerts",
+      "path": "https://eufemia.dnb.no/uilib/components/dialog/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "drawer",
+      "name": "Drawer",
+      "description": "Slide-out panel for additional content",
+      "path": "https://eufemia.dnb.no/uilib/components/drawer/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "dropdown",
+      "name": "Dropdown",
+      "description": "Select an option from a list",
+      "path": "https://eufemia.dnb.no/uilib/components/dropdown/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "form-label",
+      "name": "Form Label",
+      "description": "Accessible labels for form inputs",
+      "path": "https://eufemia.dnb.no/uilib/components/form-label/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "form-status",
+      "name": "Form Status",
+      "description": "Display validation messages and status",
+      "path": "https://eufemia.dnb.no/uilib/components/form-status/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "global-error",
+      "name": "Global Error",
+      "description": "Full-page error display",
+      "path": "https://eufemia.dnb.no/uilib/components/global-error/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "global-status",
+      "name": "Global Status",
+      "description": "Application-wide status messages",
+      "path": "https://eufemia.dnb.no/uilib/components/global-status/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "heading",
+      "name": "Heading",
+      "description": "Semantic heading with consistent styling",
+      "path": "https://eufemia.dnb.no/uilib/components/heading/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "height-animation",
+      "name": "Height Animation",
+      "description": "Animate height changes smoothly",
+      "path": "https://eufemia.dnb.no/uilib/components/height-animation/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "help-button",
+      "name": "Help Button",
+      "description": "Contextual help trigger with tooltip",
+      "path": "https://eufemia.dnb.no/uilib/components/help-button/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "icon",
+      "name": "Icon",
+      "description": "SVG icons from the Eufemia icon library",
+      "path": "https://eufemia.dnb.no/uilib/components/icon/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "info-card",
+      "name": "Info Card",
+      "description": "Highlighted information display",
+      "path": "https://eufemia.dnb.no/uilib/components/info-card/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "input",
+      "name": "Input",
+      "description": "Text input field for data entry",
+      "path": "https://eufemia.dnb.no/uilib/components/input/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "input-masked",
+      "name": "Input Masked",
+      "description": "Input with format masking (phone, date, etc.)",
+      "path": "https://eufemia.dnb.no/uilib/components/input-masked/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "list-format",
+      "name": "List Format",
+      "description": "Format lists with proper separators",
+      "path": "https://eufemia.dnb.no/uilib/components/list-format/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "logo",
+      "name": "Logo",
+      "description": "DNB logo component",
+      "path": "https://eufemia.dnb.no/uilib/components/logo/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "modal",
+      "name": "Modal",
+      "description": "Overlay dialog for focused interactions",
+      "path": "https://eufemia.dnb.no/uilib/components/modal/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "number-format",
+      "name": "Number Format",
+      "description": "Format numbers according to locale",
+      "path": "https://eufemia.dnb.no/uilib/components/number-format/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "pagination",
+      "name": "Pagination",
+      "description": "Navigate through pages of content",
+      "path": "https://eufemia.dnb.no/uilib/components/pagination/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "portal-root",
+      "name": "Portal Root",
+      "description": "Render content outside DOM hierarchy",
+      "path": "https://eufemia.dnb.no/uilib/components/portal-root/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "progress-indicator",
+      "name": "Progress Indicator",
+      "description": "Show loading or progress state",
+      "path": "https://eufemia.dnb.no/uilib/components/progress-indicator/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "radio",
+      "name": "Radio",
+      "description": "Select one option from a group",
+      "path": "https://eufemia.dnb.no/uilib/components/radio/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "section",
+      "name": "Section",
+      "description": "Content section with background variants",
+      "path": "https://eufemia.dnb.no/uilib/components/section/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "skeleton",
+      "name": "Skeleton",
+      "description": "Loading placeholder for content",
+      "path": "https://eufemia.dnb.no/uilib/components/skeleton/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "skip-content",
+      "name": "Skip Content",
+      "description": "Accessibility skip link for navigation",
+      "path": "https://eufemia.dnb.no/uilib/components/skip-content/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "slider",
+      "name": "Slider",
+      "description": "Select a value from a range",
+      "path": "https://eufemia.dnb.no/uilib/components/slider/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "step-indicator",
+      "name": "Step Indicator",
+      "description": "Show progress through a multi-step process",
+      "path": "https://eufemia.dnb.no/uilib/components/step-indicator/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "switch",
+      "name": "Switch",
+      "description": "Toggle between two states",
+      "path": "https://eufemia.dnb.no/uilib/components/switch/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "table",
+      "name": "Table",
+      "description": "Display data in rows and columns",
+      "path": "https://eufemia.dnb.no/uilib/components/table/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "tabs",
+      "name": "Tabs",
+      "description": "Organize content into tabbed sections",
+      "path": "https://eufemia.dnb.no/uilib/components/tabs/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "tag",
+      "name": "Tag",
+      "description": "Label or categorize content",
+      "path": "https://eufemia.dnb.no/uilib/components/tag/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "term-definition",
+      "name": "Term Definition",
+      "description": "Definition lists with terms",
+      "path": "https://eufemia.dnb.no/uilib/components/term-definition/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "textarea",
+      "name": "Textarea",
+      "description": "Multi-line text input",
+      "path": "https://eufemia.dnb.no/uilib/components/textarea/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "timeline",
+      "name": "Timeline",
+      "description": "Display chronological events",
+      "path": "https://eufemia.dnb.no/uilib/components/timeline/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "toggle-button",
+      "name": "Toggle Button",
+      "description": "Button that toggles between states",
+      "path": "https://eufemia.dnb.no/uilib/components/toggle-button/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "tooltip",
+      "name": "Tooltip",
+      "description": "Show additional info on hover",
+      "path": "https://eufemia.dnb.no/uilib/components/tooltip/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "upload",
+      "name": "Upload",
+      "description": "File upload with drag and drop",
+      "path": "https://eufemia.dnb.no/uilib/components/upload/",
+      "category": "Web Components",
+      "external": true
+    },
+    {
+      "slug": "visually-hidden",
+      "name": "Visually Hidden",
+      "description": "Hide content visually but keep accessible",
+      "path": "https://eufemia.dnb.no/uilib/components/visually-hidden/",
+      "category": "Web Components",
+      "external": true
+    }
+  ]
+}
