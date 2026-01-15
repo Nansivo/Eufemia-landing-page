@@ -316,6 +316,32 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
                 GitHub
               </a>
             )}
+            <button
+              onClick={() => alert("Press Cmd+K to open search and compare this component")}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 14px",
+                background: "#f0f7f7",
+                border: "1px solid #b3dede",
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: "#007272",
+                cursor: "pointer",
+                textDecoration: "none",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#e6f2f2";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#f0f7f7";
+              }}
+            >
+              ↔ Compare
+            </button>
           </div>
         )}
 

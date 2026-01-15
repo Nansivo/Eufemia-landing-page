@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { navigate } from "gatsby";
-import webComponentsData from "../data/web-components.json";
+import { fetchComponentsForSearch } from "../lib/sanity";
 
 interface SearchResult {
   title: string;
@@ -8,26 +8,13 @@ interface SearchResult {
   path: string;
   category: string;
   external?: boolean;
+  id?: string;
+  isCurrentPage?: boolean;
 }
 
-// Build searchable content from the generated JSON + static pages
-const webComponents: SearchResult[] = webComponentsData.components.map(c => ({
-  title: c.name,
-  description: c.description,
-  path: c.path,
-  category: c.category,
-  external: c.external
-}));
-
 const staticPages: SearchResult[] = [
-  // iOS components (internal)
-  { title: "Avatar", description: "Show an image or text to represent a person", path: "/docs/ios/components/avatar", category: "iOS Components" },
-  { title: "Avatar Group", description: "Display multiple avatars together", path: "/docs/ios/components/avatar-group", category: "iOS Components" },
-  { title: "Button (iOS)", description: "iOS native button component", path: "/docs/ios/components/button", category: "iOS Components" },
-  { title: "Checkbox", description: "Select one or more options", path: "/docs/ios/components/checkbox", category: "iOS Components" },
   // Pages
   { title: "Web Overview", description: "Overview of web components", path: "https://eufemia.dnb.no/uilib/", category: "Pages", external: true },
-  { title: "iOS Overview", description: "Overview of iOS components", path: "/docs/ios", category: "Pages" },
   { title: "Getting Started", description: "Start building with Eufemia", path: "/getting-started", category: "Pages" },
   { title: "About Eufemia", description: "Learn about the design system", path: "/about", category: "Pages" },
   { title: "Changelog", description: "Latest updates and releases", path: "/changelog", category: "Pages" },
@@ -38,8 +25,6 @@ const staticPages: SearchResult[] = [
   { title: "Spacing", description: "Layout spacing system", path: "https://eufemia.dnb.no/uilib/usage/layout/spacing/", category: "Guides", external: true },
   { title: "Theming", description: "Customize the look and feel", path: "https://eufemia.dnb.no/uilib/usage/customisation/theming/", category: "Guides", external: true },
 ];
-
-const searchableContent: SearchResult[] = [...webComponents, ...staticPages];
 
 const recentSearches = ["Button", "Typography", "Getting Started"];
 const quickActions = [
@@ -57,16 +42,49 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [cmsComponents, setCmsComponents] = useState<SearchResult[]>([]);
+  const [isLoadingCMS, setIsLoadingCMS] = useState(false);
+  const [currentComponent, setCurrentComponent] = useState<{ platform: string; slug: string } | null>(null);
+  const [isCompareMode, setIsCompareMode] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const filteredResults = query.length > 0
+  // Detect if user is trying to enter compare mode
+  const isCompareModeQuery = query.toLowerCase().startsWith("/compare");
+  const searchQuery = isCompareModeQuery ? query.slice(8).trim() : query;
+
+  // Update compare mode based on query
+  useEffect(() => {
+    setIsCompareMode(isCompareModeQuery && currentComponent !== null);
+  }, [isCompareModeQuery, currentComponent]);
+
+  const searchableContent: SearchResult[] = [...cmsComponents, ...staticPages];
+
+  // Mark current page
+  if (currentComponent) {
+    const currentPath = `/docs/${currentComponent.platform}/components/${currentComponent.slug}`;
+    searchableContent.forEach(item => {
+      if (item.path === currentPath) {
+        item.isCurrentPage = true;
+      }
+    });
+  }
+
+  // Filter results based on mode
+  let filteredResults = query.length > 0
     ? searchableContent.filter(
         item =>
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.description.toLowerCase().includes(query.toLowerCase()) ||
-          item.category.toLowerCase().includes(query.toLowerCase())
+          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.category.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
+
+  // In compare mode, only show iOS and Android components
+  if (isCompareMode) {
+    filteredResults = filteredResults.filter(
+      item => item.category.includes("iOS Components") || item.category.includes("Android Components")
+    );
+  }
 
   // Group results by category
   const groupedResults = filteredResults.reduce((acc, item) => {
@@ -74,6 +92,52 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
     acc[item.category].push(item);
     return acc;
   }, {} as Record<string, SearchResult[]>);
+
+  // Fetch CMS components on component mount and when modal opens
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Detect if we're on a component page
+    let detectedComponent: { platform: string; slug: string } | null = null;
+
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname;
+      const match = path.match(/\/docs\/(ios|android)\/components\/([^\/]+)/);
+      if (match) {
+        const urlSlug = match[2];
+        // We'll match against CMS components to get the correct slug
+        detectedComponent = { platform: match[1], slug: urlSlug };
+      }
+    }
+
+    const loadCMSComponents = async () => {
+      setIsLoadingCMS(true);
+      try {
+        const components = await fetchComponentsForSearch();
+        setCmsComponents(components);
+
+        // If we're on a component page, find the matching CMS component to get the correct slug
+        if (detectedComponent) {
+          const matchedComponent = components.find(
+            c => c.path.includes(`/docs/${detectedComponent!.platform}/components/`)
+          );
+          if (matchedComponent) {
+            // Extract the actual CMS slug from the path
+            const pathMatch = matchedComponent.path.match(/\/docs\/\w+\/components\/([^\/]+)$/);
+            if (pathMatch) {
+              setCurrentComponent({ platform: detectedComponent.platform, slug: pathMatch[1] });
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load CMS components:", error);
+      } finally {
+        setIsLoadingCMS(false);
+      }
+    };
+
+    loadCMSComponents();
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -103,7 +167,18 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
         if (result.external) {
           window.open(result.path, "_blank");
         } else {
-          navigate(result.path);
+          // Only open comparison view if in compare mode
+          if (isCompareMode && currentComponent && result.category.includes("Components")) {
+            const firstParam = `${currentComponent.platform}/${currentComponent.slug}`;
+            const secondPath = result.path; // format: /docs/platform/components/slug
+            const match = secondPath.match(/\/docs\/(ios|android)\/components\/([^\/]+)/);
+            if (match) {
+              const secondParam = `${match[1]}/${match[2]}`;
+              navigate(`/docs/comparison?first=${firstParam}&second=${secondParam}`);
+            }
+          } else {
+            navigate(result.path);
+          }
         }
         onClose();
       }
@@ -160,6 +235,22 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
         }}
       >
 
+        {/* Comparison mode indicator */}
+        {isCompareMode && (
+          <div
+            style={{
+              padding: "8px 20px",
+              background: "#e6f2f2",
+              borderBottom: "1px solid #d0e8e8",
+              fontSize: "13px",
+              color: "#007272",
+              fontWeight: 500,
+            }}
+          >
+            ↔ Comparing with: {currentComponent!.slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+          </div>
+        )}
+
         {/* Search input */}
         <div
           style={{
@@ -176,7 +267,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Search components, guides, and more..."
+            placeholder={currentComponent ? "Type /compare to compare components..." : "Search components, guides, and more..."}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             style={{
@@ -333,7 +424,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 
                     return (
                       <div
-                        key={result.path}
+                        key={result.id || result.path}
                         onClick={() => {
                           if (result.external) {
                             window.open(result.path, "_blank");
@@ -362,9 +453,27 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                               fontWeight: 500,
                               color: isSelected ? "#007272" : "#1a1a1a",
                               marginBottom: "2px",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
                             }}
                           >
                             {result.title}
+                            {result.isCurrentPage && (
+                              <span
+                                style={{
+                                  fontSize: "11px",
+                                  fontWeight: 600,
+                                  padding: "2px 6px",
+                                  background: "#e6f2f2",
+                                  color: "#007272",
+                                  borderRadius: "3px",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                Current
+                              </span>
+                            )}
                           </div>
                           <div
                             style={{
