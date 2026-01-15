@@ -36,9 +36,10 @@ const quickActions = [
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialCompareMode?: boolean;
 }
 
-const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
+const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompareMode = false }) => {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -52,10 +53,11 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
   const isCompareModeQuery = query.toLowerCase().startsWith("/compare");
   const searchQuery = isCompareModeQuery ? query.slice(8).trim() : query;
 
-  // Update compare mode based on query
+  // Update compare mode based on query - activate as soon as /compare is typed
   useEffect(() => {
-    setIsCompareMode(isCompareModeQuery && currentComponent !== null);
-  }, [isCompareModeQuery, currentComponent]);
+    const newIsCompareMode = (isCompareModeQuery || initialCompareMode) && currentComponent !== null;
+    setIsCompareMode(newIsCompareMode);
+  }, [isCompareModeQuery, currentComponent, initialCompareMode]);
 
   const searchableContent: SearchResult[] = [...cmsComponents, ...staticPages];
 
@@ -70,19 +72,31 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
   }
 
   // Filter results based on mode
-  let filteredResults = query.length > 0
-    ? searchableContent.filter(
-        item =>
-          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.category.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
+  let filteredResults: SearchResult[];
 
-  // In compare mode, only show iOS and Android components
+  if (isCompareModeQuery && !searchQuery.trim()) {
+    // In compare mode with no search term, show all components
+    filteredResults = searchableContent;
+  } else if (query.length > 0) {
+    // Normal search mode or compare mode with search term
+    filteredResults = searchableContent.filter(
+      item =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  } else {
+    filteredResults = [];
+  }
+
+  // In compare mode, only show iOS and Android components (but exclude current component)
   if (isCompareMode) {
     filteredResults = filteredResults.filter(
-      item => item.category.includes("iOS Components") || item.category.includes("Android Components")
+      item => {
+        const isComponentType = item.category.includes("iOS Components") || item.category.includes("Android Components");
+        const isNotCurrentComponent = !item.isCurrentPage;
+        return isComponentType && isNotCurrentComponent;
+      }
     );
   }
 
@@ -105,7 +119,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
       const match = path.match(/\/docs\/(ios|android)\/components\/([^\/]+)/);
       if (match) {
         const urlSlug = match[2];
-        // We'll match against CMS components to get the correct slug
         detectedComponent = { platform: match[1], slug: urlSlug };
       }
     }
@@ -116,17 +129,14 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
         const components = await fetchComponentsForSearch();
         setCmsComponents(components);
 
-        // If we're on a component page, find the matching CMS component to get the correct slug
+        // If we're on a component page, find the exact matching component
         if (detectedComponent) {
+          const expectedPath = `/docs/${detectedComponent.platform}/components/${detectedComponent.slug}`;
           const matchedComponent = components.find(
-            c => c.path.includes(`/docs/${detectedComponent!.platform}/components/`)
+            c => c.path === expectedPath || c.path === expectedPath + "/"
           );
           if (matchedComponent) {
-            // Extract the actual CMS slug from the path
-            const pathMatch = matchedComponent.path.match(/\/docs\/\w+\/components\/([^\/]+)$/);
-            if (pathMatch) {
-              setCurrentComponent({ platform: detectedComponent.platform, slug: pathMatch[1] });
-            }
+            setCurrentComponent(detectedComponent);
           }
         }
       } catch (error) {
@@ -429,7 +439,18 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                           if (result.external) {
                             window.open(result.path, "_blank");
                           } else {
-                            navigate(result.path);
+                            // Handle comparison mode
+                            if (isCompareMode && currentComponent && result.category.includes("Components")) {
+                              const firstParam = `${currentComponent.platform}/${currentComponent.slug}`;
+                              const secondPath = result.path;
+                              const match = secondPath.match(/\/docs\/(ios|android)\/components\/([^\/]+)/);
+                              if (match) {
+                                const secondParam = `${match[1]}/${match[2]}`;
+                                navigate(`/docs/comparison?first=${firstParam}&second=${secondParam}`);
+                              }
+                            } else {
+                              navigate(result.path);
+                            }
                           }
                           onClose();
                         }}

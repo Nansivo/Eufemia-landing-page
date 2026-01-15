@@ -317,7 +317,10 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
               </a>
             )}
             <button
-              onClick={() => alert("Press Cmd+K to open search and compare this component")}
+              onClick={() => {
+                // Dispatch custom event to open search in compare mode
+                window.dispatchEvent(new Event("openSearchCompare"));
+              }}
               style={{
                 display: "inline-flex",
                 alignItems: "center",

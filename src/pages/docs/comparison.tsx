@@ -9,8 +9,18 @@ interface ComponentData {
   platform: string;
   shortDescription: string | null;
   _rawDocumentation: any[] | null;
+  previewImage?: {
+    asset?: {
+      url?: string;
+    };
+  };
+  guidelines?: string;
+  usage?: string;
+  dosAndDonts?: string;
+  accessibilityInfo?: string;
   figmaLink: string | null;
   githubLink: string | null;
+  status?: string;
   slug: {
     current: string;
   };
@@ -65,8 +75,18 @@ const ComparisonPage: React.FC = () => {
                     platform
                     shortDescription
                     _rawDocumentation
+                    previewImage {
+                      asset {
+                        url
+                      }
+                    }
+                    guidelines
+                    usage
+                    dosAndDonts
+                    accessibilityInfo
                     figmaLink
                     githubLink
+                    status
                     slug {
                       current
                     }

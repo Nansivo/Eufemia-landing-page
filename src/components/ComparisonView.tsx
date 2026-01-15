@@ -22,8 +22,18 @@ interface ComponentData {
   platform: string;
   shortDescription: string | null;
   _rawDocumentation: Block[] | null;
+  previewImage?: {
+    asset?: {
+      url?: string;
+    };
+  };
+  guidelines?: string;
+  usage?: string;
+  dosAndDonts?: string;
+  accessibilityInfo?: string;
   figmaLink: string | null;
   githubLink: string | null;
+  status?: string;
   slug: {
     current: string;
   };
@@ -147,19 +157,35 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
     <div style={{ padding: "0 20px" }}>
       {/* Header */}
       <div style={{ marginBottom: "24px" }}>
-        <div
-          style={{
-            display: "inline-block",
-            padding: "4px 10px",
-            background: platformBg,
-            borderRadius: "4px",
-            fontSize: "12px",
-            fontWeight: 500,
-            color: platformColor,
-            marginBottom: "12px",
-          }}
-        >
-          {platformLabel}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+          <div
+            style={{
+              display: "inline-block",
+              padding: "4px 10px",
+              background: platformBg,
+              borderRadius: "4px",
+              fontSize: "12px",
+              fontWeight: 500,
+              color: platformColor,
+            }}
+          >
+            {platformLabel}
+          </div>
+          {component.status && (
+            <div
+              style={{
+                display: "inline-block",
+                padding: "4px 10px",
+                background: "#f0f0f0",
+                borderRadius: "4px",
+                fontSize: "12px",
+                fontWeight: 500,
+                color: "#666",
+              }}
+            >
+              {component.status}
+            </div>
+          )}
         </div>
         <h2 style={{ fontSize: "24px", fontWeight: 700, color: "#1a1a1a", margin: "0 0 12px 0" }}>
           {component.name}
@@ -170,6 +196,28 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
           </p>
         )}
       </div>
+
+      {/* Preview Image */}
+      {component.previewImage?.asset?.url && (
+        <div
+          style={{
+            marginBottom: "24px",
+            borderRadius: "8px",
+            overflow: "hidden",
+            border: "1px solid #e8e8e8",
+          }}
+        >
+          <img
+            src={component.previewImage.asset.url}
+            alt={component.name}
+            style={{
+              width: "100%",
+              height: "auto",
+              display: "block",
+            }}
+          />
+        </div>
+      )}
 
       {/* Links */}
       {(component.figmaLink || component.githubLink) && (
@@ -249,8 +297,63 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
         </div>
       )}
 
+      {/* Guidelines */}
+      {component.guidelines && (
+        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: "1px solid #e8e8e8" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: "#1a1a1a" }}>
+            Guidelines
+          </h3>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#555", margin: 0 }}>
+            {component.guidelines}
+          </p>
+        </div>
+      )}
+
+      {/* Usage */}
+      {component.usage && (
+        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: "1px solid #e8e8e8" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: "#1a1a1a" }}>
+            Usage
+          </h3>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap", margin: 0 }}>
+            {component.usage}
+          </p>
+        </div>
+      )}
+
+      {/* Do's and Don'ts */}
+      {component.dosAndDonts && (
+        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: "1px solid #e8e8e8" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: "#1a1a1a" }}>
+            Do's and Don'ts
+          </h3>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap", margin: 0 }}>
+            {component.dosAndDonts}
+          </p>
+        </div>
+      )}
+
+      {/* Accessibility */}
+      {component.accessibilityInfo && (
+        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: "1px solid #e8e8e8" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: "#1a1a1a" }}>
+            Accessibility
+          </h3>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap", margin: 0 }}>
+            {component.accessibilityInfo}
+          </p>
+        </div>
+      )}
+
       {/* Documentation */}
-      <div>{component._rawDocumentation?.map((block, i) => renderBlock(block, i))}</div>
+      {component._rawDocumentation && component._rawDocumentation.length > 0 && (
+        <div>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: "#1a1a1a" }}>
+            Documentation
+          </h3>
+          {component._rawDocumentation.map((block, i) => renderBlock(block, i))}
+        </div>
+      )}
     </div>
   );
 };

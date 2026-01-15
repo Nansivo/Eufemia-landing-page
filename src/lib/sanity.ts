@@ -67,7 +67,7 @@ export async function fetchComponentsForSearch(): Promise<SearchableComponent[]>
         title: component.name,
         description: component.shortDescription || "Design system component",
         path: `/docs/${component.platform}/components/${slugValue}`,
-        category: `${component.platform.charAt(0).toUpperCase() + component.platform.slice(1)} Components`,
+        category: `${component.platform === "ios" ? "iOS" : "Android"} Components`,
         external: false,
       };
     });

@@ -4,6 +4,7 @@ import SearchModal from "./SearchModal";
 
 const Header: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchCompareMode, setSearchCompareMode] = useState(false);
   const [searchHovered, setSearchHovered] = useState(false);
   const [themeHovered, setThemeHovered] = useState(false);
 
@@ -16,8 +17,18 @@ const Header: React.FC = () => {
       }
     };
 
+    // Listen for compare mode trigger
+    const handleCompareMode = () => {
+      setSearchCompareMode(true);
+      setSearchOpen(true);
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("openSearchCompare", handleCompareMode);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("openSearchCompare", handleCompareMode);
+    };
   }, []);
 
   return (
@@ -138,7 +149,14 @@ const Header: React.FC = () => {
         </div>
       </header>
 
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <SearchModal
+        isOpen={searchOpen}
+        onClose={() => {
+          setSearchOpen(false);
+          setSearchCompareMode(false);
+        }}
+        initialCompareMode={searchCompareMode}
+      />
     </>
   );
 };
