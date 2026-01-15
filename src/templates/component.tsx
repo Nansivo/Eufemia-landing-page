@@ -25,6 +25,16 @@ interface ComponentData {
   platform: string;
   shortDescription: string | null;
   _rawDocumentation: Block[] | null;
+  previewImage?: {
+    asset?: {
+      url?: string;
+    };
+  };
+  guidelines?: string | null;
+  usage?: string | null;
+  dosAndDonts?: string | null;
+  accessibilityInfo?: string | null;
+  status?: string | null;
   figmaLink: string | null;
   githubLink: string | null;
 }
@@ -196,7 +206,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
   const platformPath = `/docs/${component.platform}`;
 
   return (
-    <Layout currentPlatform={component.platform} currentPath={`${platformPath}/components`}>
+    <Layout currentPlatform={component.platform as "ios" | "android"} currentPath={`${platformPath}/components`}>
       <div style={{ padding: "48px 40px", maxWidth: "800px" }}>
         {/* Breadcrumb */}
         <div
@@ -348,6 +358,94 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
           </div>
         )}
 
+        {/* Preview Image */}
+        {component.previewImage?.asset?.url && (
+          <div
+            style={{
+              marginBottom: "40px",
+              borderRadius: "8px",
+              overflow: "hidden",
+              border: "1px solid #e8e8e8",
+            }}
+          >
+            <img
+              src={component.previewImage.asset.url}
+              alt={component.name}
+              style={{
+                width: "100%",
+                height: "auto",
+                display: "block",
+              }}
+            />
+          </div>
+        )}
+
+        {/* Status Badge */}
+        {component.status && (
+          <div
+            style={{
+              display: "inline-block",
+              padding: "6px 12px",
+              background: "#f0f0f0",
+              borderRadius: "4px",
+              fontSize: "13px",
+              fontWeight: 500,
+              color: "#666",
+              marginBottom: "32px",
+            }}
+          >
+            Status: {component.status}
+          </div>
+        )}
+
+        {/* Guidelines */}
+        {component.guidelines && (
+          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: "1px solid #e8e8e8" }}>
+            <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: 0, color: "#1a1a1a" }}>
+              Guidelines
+            </h2>
+            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap" }}>
+              {component.guidelines}
+            </p>
+          </div>
+        )}
+
+        {/* Usage */}
+        {component.usage && (
+          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: "1px solid #e8e8e8" }}>
+            <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: 0, color: "#1a1a1a" }}>
+              How to Use
+            </h2>
+            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap" }}>
+              {component.usage}
+            </p>
+          </div>
+        )}
+
+        {/* Do's and Don'ts */}
+        {component.dosAndDonts && (
+          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: "1px solid #e8e8e8" }}>
+            <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: 0, color: "#1a1a1a" }}>
+              Do's and Don'ts
+            </h2>
+            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap" }}>
+              {component.dosAndDonts}
+            </p>
+          </div>
+        )}
+
+        {/* Accessibility */}
+        {component.accessibilityInfo && (
+          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: "1px solid #e8e8e8" }}>
+            <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: 0, color: "#1a1a1a" }}>
+              Accessibility
+            </h2>
+            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap" }}>
+              {component.accessibilityInfo}
+            </p>
+          </div>
+        )}
+
         {/* Documentation content */}
         <div>{component._rawDocumentation?.map((block, i) => renderBlock(block, i))}</div>
 
@@ -388,6 +486,16 @@ export const query = graphql`
       platform
       shortDescription
       _rawDocumentation
+      previewImage {
+        asset {
+          url
+        }
+      }
+      guidelines
+      usage
+      dosAndDonts
+      accessibilityInfo
+      status
       figmaLink
       githubLink
     }

@@ -44,6 +44,57 @@ export default defineType({
       description: 'Brief description shown on component cards',
     }),
     defineField({
+      name: 'previewImage',
+      title: 'Preview Image',
+      type: 'image',
+      description: 'Main visual preview of the component',
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
+      name: 'guidelines',
+      title: 'Guidelines',
+      type: 'text',
+      rows: 4,
+      description: 'When and why to use this component',
+    }),
+    defineField({
+      name: 'usage',
+      title: 'Usage',
+      type: 'text',
+      rows: 4,
+      description: 'How to use this component (step-by-step)',
+    }),
+    defineField({
+      name: 'dosAndDonts',
+      title: 'Do\'s and Don\'ts',
+      type: 'text',
+      rows: 4,
+      description: 'Best practices and anti-patterns',
+    }),
+    defineField({
+      name: 'accessibilityInfo',
+      title: 'Accessibility',
+      type: 'text',
+      rows: 4,
+      description: 'Accessibility considerations (WCAG compliance, screen reader support, etc)',
+    }),
+    defineField({
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Stable', value: 'Stable'},
+          {title: 'Beta', value: 'Beta'},
+          {title: 'Deprecated', value: 'Deprecated'},
+        ],
+        layout: 'dropdown',
+      },
+      description: 'Component status',
+    }),
+    defineField({
       name: 'documentation',
       title: 'Documentation',
       type: 'array',
