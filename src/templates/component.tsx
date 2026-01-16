@@ -330,67 +330,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
           </div>
         )}
 
-        {/* Links and Compare Button */}
-        {(component.figmaLink || component.githubLink) && (
-          <div
-            style={{
-              display: "flex",
-              gap: "12px",
-              marginBottom: "40px",
-              paddingBottom: "32px",
-              borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}`,
-            }}
-          >
-            {component.figmaLink && (
-              <a
-                href={component.figmaLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "8px 14px",
-                  background: isDark ? "#1a1a1a" : "#fff",
-                  border: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
-                  borderRadius: "6px",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  color: isDark ? "#ccc" : "#333",
-                  textDecoration: "none",
-                }}
-              >
-                <FigmaIcon />
-                Figma
-              </a>
-            )}
-            {component.githubLink && (
-              <a
-                href={component.githubLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "8px 14px",
-                  background: isDark ? "#1a1a1a" : "#fff",
-                  border: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
-                  borderRadius: "6px",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  color: isDark ? "#ccc" : "#333",
-                  textDecoration: "none",
-                }}
-              >
-                <GitHubIcon />
-                GitHub
-              </a>
-            )}
-          </div>
-        )}
-
-        {/* Compare Button - Always visible */}
+        {/* Action Buttons Section */}
         <div
           style={{
             display: "flex",
@@ -398,8 +338,10 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
             marginBottom: "40px",
             paddingBottom: "32px",
             borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}`,
+            flexWrap: "wrap",
           }}
         >
+          {/* Compare Button - Always First */}
           <button
             onClick={() => {
               // Dispatch custom event to open search in compare mode
@@ -429,6 +371,56 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
           >
             ↔ Compare
           </button>
+
+          {/* Figma Link */}
+          {component.figmaLink && (
+            <a
+              href={component.figmaLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 14px",
+                background: isDark ? "#1a1a1a" : "#fff",
+                border: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: isDark ? "#ccc" : "#333",
+                textDecoration: "none",
+              }}
+            >
+              <FigmaIcon />
+              Figma
+            </a>
+          )}
+
+          {/* GitHub Link */}
+          {component.githubLink && (
+            <a
+              href={component.githubLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 14px",
+                background: isDark ? "#1a1a1a" : "#fff",
+                border: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: isDark ? "#ccc" : "#333",
+                textDecoration: "none",
+              }}
+            >
+              <GitHubIcon />
+              GitHub
+            </a>
+          )}
         </div>
 
         {/* Guidelines Section */}
