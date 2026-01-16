@@ -330,7 +330,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
           </div>
         )}
 
-        {/* Links */}
+        {/* Links and Compare Button */}
         {(component.figmaLink || component.githubLink) && (
           <div
             style={{
@@ -387,37 +387,49 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
                 GitHub
               </a>
             )}
-            <button
-              onClick={() => {
-                // Dispatch custom event to open search in compare mode
-                window.dispatchEvent(new Event("openSearchCompare"));
-              }}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "8px 14px",
-                background: isDark ? "#1a3333" : "#f0f7f7",
-                border: isDark ? "1px solid #1a5c5c" : "1px solid #b3dede",
-                borderRadius: "6px",
-                fontSize: "14px",
-                fontWeight: 500,
-                color: isDark ? "#66c9c9" : "#007272",
-                cursor: "pointer",
-                textDecoration: "none",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = isDark ? "#1a4c4c" : "#e6f2f2";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = isDark ? "#1a3333" : "#f0f7f7";
-              }}
-            >
-              ↔ Compare
-            </button>
           </div>
         )}
+
+        {/* Compare Button - Always visible */}
+        <div
+          style={{
+            display: "flex",
+            gap: "12px",
+            marginBottom: "40px",
+            paddingBottom: "32px",
+            borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}`,
+          }}
+        >
+          <button
+            onClick={() => {
+              // Dispatch custom event to open search in compare mode
+              window.dispatchEvent(new Event("openSearchCompare"));
+            }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px 14px",
+              background: isDark ? "#1a3333" : "#f0f7f7",
+              border: isDark ? "1px solid #1a5c5c" : "1px solid #b3dede",
+              borderRadius: "6px",
+              fontSize: "14px",
+              fontWeight: 500,
+              color: isDark ? "#66c9c9" : "#007272",
+              cursor: "pointer",
+              textDecoration: "none",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = isDark ? "#1a4c4c" : "#e6f2f2";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = isDark ? "#1a3333" : "#f0f7f7";
+            }}
+          >
+            ↔ Compare
+          </button>
+        </div>
 
         {/* Guidelines Section */}
         {component.guidelines && (
