@@ -23,11 +23,20 @@ interface ComponentData {
   platform: string;
   shortDescription: string | null;
   _rawDocumentation: Block[] | null;
-  previewImage?: {
-    asset?: {
-      url?: string;
+  _rawPreviewImage?: {
+    light?: {
+      asset?: {
+        _ref?: string;
+        url?: string;
+      };
     };
-  };
+    dark?: {
+      asset?: {
+        _ref?: string;
+        url?: string;
+      };
+    };
+  } | null;
   guidelines?: string;
   usage?: string;
   dosAndDonts?: string;
@@ -199,7 +208,8 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
       </div>
 
       {/* Preview Image */}
-      {component.previewImage?.asset?.url && (
+      {(component._rawPreviewImage?.light?.asset?.url || component._rawPreviewImage?.light?.asset?._ref ||
+        component._rawPreviewImage?.dark?.asset?.url || component._rawPreviewImage?.dark?.asset?._ref) && (
         <div
           style={{
             marginBottom: "24px",
@@ -208,15 +218,28 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
             border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
           }}
         >
-          <img
-            src={component.previewImage.asset.url}
-            alt={component.name}
-            style={{
-              width: "100%",
-              height: "auto",
-              display: "block",
-            }}
-          />
+          {isDark && component._rawPreviewImage?.dark?.asset && (
+            <img
+              src={component._rawPreviewImage.dark.asset.url || buildImageUrl(component._rawPreviewImage.dark.asset._ref || "")}
+              alt={component.name}
+              style={{
+                width: "100%",
+                height: "auto",
+                display: "block",
+              }}
+            />
+          )}
+          {!isDark && component._rawPreviewImage?.light?.asset && (
+            <img
+              src={component._rawPreviewImage.light.asset.url || buildImageUrl(component._rawPreviewImage.light.asset._ref || "")}
+              alt={component.name}
+              style={{
+                width: "100%",
+                height: "auto",
+                display: "block",
+              }}
+            />
+          )}
         </div>
       )}
 
