@@ -160,8 +160,8 @@ const GitHubIcon = () => (
 
 const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = ({ component, isDark }) => {
   const platformLabel = component.platform === "ios" ? "iOS" : "Android";
-  const platformBg = component.platform === "ios" ? "#f5f5f7" : "#e8f5e9";
-  const platformColor = component.platform === "ios" ? "#1d1d1f" : "#2e7d32";
+  const platformBg = component.platform === "ios" ? "#e3f2fd" : "#e8f5e9";
+  const platformColor = component.platform === "ios" ? "#1565c0" : "#2e7d32";
 
   return (
     <div style={{ padding: "0 20px" }}>
