@@ -259,11 +259,11 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
             style={{
               display: "inline-block",
               padding: "4px 10px",
-              background: component.platform === "ios" ? "#f5f5f7" : "#e8f5e9",
+              background: component.platform === "ios" ? "#e3f2fd" : "#e8f5e9",
               borderRadius: "4px",
               fontSize: "12px",
               fontWeight: 500,
-              color: component.platform === "ios" ? "#1d1d1f" : "#2e7d32",
+              color: component.platform === "ios" ? "#1565c0" : "#2e7d32",
               marginBottom: "12px",
             }}
           >
