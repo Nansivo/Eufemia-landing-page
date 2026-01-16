@@ -9,11 +9,20 @@ interface ComponentData {
   platform: string;
   shortDescription: string | null;
   _rawDocumentation: any[] | null;
-  previewImage?: {
-    asset?: {
-      url?: string;
+  _rawPreviewImage?: {
+    light?: {
+      asset?: {
+        _ref?: string;
+        url?: string;
+      };
     };
-  };
+    dark?: {
+      asset?: {
+        _ref?: string;
+        url?: string;
+      };
+    };
+  } | null;
   guidelines?: string;
   usage?: string;
   dosAndDonts?: string;
@@ -75,11 +84,7 @@ const ComparisonPage: React.FC = () => {
                     platform
                     shortDescription
                     _rawDocumentation
-                    previewImage {
-                      asset {
-                        url
-                      }
-                    }
+                    _rawPreviewImage
                     guidelines
                     usage
                     dosAndDonts
