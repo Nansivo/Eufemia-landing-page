@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "gatsby";
 import Layout from "../components/Layout";
+import { useTheme } from "../context/ThemeContext";
 
 const ArrowIcon = () => (
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -50,6 +51,8 @@ const resources = [
 
 const IndexPage: React.FC = () => {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
     <Layout currentPath="/">
@@ -106,10 +109,10 @@ const IndexPage: React.FC = () => {
                 alignItems: "center",
                 gap: "8px",
                 padding: "12px 20px",
-                background: "#fff",
-                border: "1px solid #ddd",
+                background: isDark ? "#1a1a1a" : "#fff",
+                border: `1px solid ${isDark ? "#444" : "#ddd"}`,
                 borderRadius: "6px",
-                color: "#333",
+                color: isDark ? "#ddd" : "#333",
                 textDecoration: "none",
                 fontSize: "14px",
                 fontWeight: 500,
@@ -188,7 +191,7 @@ const IndexPage: React.FC = () => {
               View all
             </Link>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1px", background: "#eee", borderRadius: "8px", overflow: "hidden" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1px", background: isDark ? "#444" : "#eee", borderRadius: "8px", overflow: "hidden" }}>
             {updates.map((update, i) => (
               <div
                 key={i}
@@ -197,17 +200,17 @@ const IndexPage: React.FC = () => {
                   alignItems: "flex-start",
                   gap: "16px",
                   padding: "16px 20px",
-                  background: "#fff",
+                  background: isDark ? "#1a1a1a" : "#fff",
                 }}
               >
-                <span style={{ fontSize: "13px", color: "#888", minWidth: "90px", flexShrink: 0 }}>
+                <span style={{ fontSize: "13px", color: isDark ? "#999" : "#888", minWidth: "90px", flexShrink: 0 }}>
                   {update.date}
                 </span>
                 <div>
-                  <p style={{ fontSize: "14px", fontWeight: 500, color: "#111", marginBottom: "2px" }}>
+                  <p style={{ fontSize: "14px", fontWeight: 500, color: isDark ? "#fff" : "#111", marginBottom: "2px" }}>
                     {update.title}
                   </p>
-                  <p style={{ fontSize: "13px", color: "#666", margin: 0 }}>
+                  <p style={{ fontSize: "13px", color: isDark ? "#999" : "#666", margin: 0 }}>
                     {update.description}
                   </p>
                 </div>
@@ -230,11 +233,11 @@ const IndexPage: React.FC = () => {
                 rel="noopener noreferrer"
                 style={{
                   padding: "8px 14px",
-                  background: "#f5f5f5",
+                  background: isDark ? "#222" : "#f5f5f5",
                   borderRadius: "6px",
                   fontSize: "13px",
                   fontWeight: 500,
-                  color: "#444",
+                  color: isDark ? "#999" : "#444",
                   textDecoration: "none",
                 }}
               >

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTheme } from "../context/ThemeContext";
 
 interface Block {
   _key: string;
@@ -51,7 +52,7 @@ const buildImageUrl = (ref: string) => {
 };
 
 // Render portable text blocks
-const renderBlock = (block: Block, index: number) => {
+const renderBlock = (block: Block, index: number, isDark: boolean) => {
   // Handle images
   if (block._type === "image" && block.asset?._ref) {
     const imageUrl = buildImageUrl(block.asset._ref);
@@ -62,7 +63,7 @@ const renderBlock = (block: Block, index: number) => {
           margin: "24px 0",
           borderRadius: "8px",
           overflow: "hidden",
-          border: "1px solid #e8e8e8",
+          border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
         }}
       >
         <img
@@ -92,7 +93,7 @@ const renderBlock = (block: Block, index: number) => {
         <code
           key={i}
           style={{
-            background: "#f5f5f5",
+            background: isDark ? "#222" : "#f5f5f5",
             padding: "2px 6px",
             borderRadius: "4px",
             fontSize: "14px",
@@ -126,7 +127,7 @@ const renderBlock = (block: Block, index: number) => {
       );
     default:
       return (
-        <p key={index} style={{ fontSize: "15px", lineHeight: 1.6, color: "#555", marginBottom: "16px" }}>
+        <p key={index} style={{ fontSize: "15px", lineHeight: 1.6, color: isDark ? "#999" : "#555", marginBottom: "16px" }}>
           {text}
         </p>
       );
@@ -148,7 +149,7 @@ const GitHubIcon = () => (
   </svg>
 );
 
-const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) => {
+const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = ({ component, isDark }) => {
   const platformLabel = component.platform === "ios" ? "iOS" : "Android";
   const platformBg = component.platform === "ios" ? "#f5f5f7" : "#e8f5e9";
   const platformColor = component.platform === "ios" ? "#1d1d1f" : "#2e7d32";
@@ -187,11 +188,11 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
             </div>
           )}
         </div>
-        <h2 style={{ fontSize: "24px", fontWeight: 700, color: "#1a1a1a", margin: "0 0 12px 0" }}>
+        <h2 style={{ fontSize: "24px", fontWeight: 700, color: isDark ? "#fff" : "#1a1a1a", margin: "0 0 12px 0" }}>
           {component.name}
         </h2>
         {component.shortDescription && (
-          <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#555", margin: 0 }}>
+          <p style={{ fontSize: "15px", lineHeight: 1.6, color: isDark ? "#999" : "#555", margin: 0 }}>
             {component.shortDescription}
           </p>
         )}
@@ -204,7 +205,7 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
             marginBottom: "24px",
             borderRadius: "8px",
             overflow: "hidden",
-            border: "1px solid #e8e8e8",
+            border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
           }}
         >
           <img
@@ -227,7 +228,7 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
             gap: "12px",
             marginBottom: "24px",
             paddingBottom: "24px",
-            borderBottom: "1px solid #e8e8e8",
+            borderBottom: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
           }}
         >
           {component.figmaLink && (
@@ -240,12 +241,12 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
                 alignItems: "center",
                 gap: "6px",
                 padding: "6px 12px",
-                background: "#fff",
-                border: "1px solid #e0e0e0",
+                background: isDark ? "#1a1a1a" : "#fff",
+                border: `1px solid ${isDark ? "#333" : "#e0e0e0"}`,
                 borderRadius: "6px",
                 fontSize: "13px",
                 fontWeight: 500,
-                color: "#333",
+                color: isDark ? "#ddd" : "#333",
                 textDecoration: "none",
                 transition: "all 0.2s",
               }}
@@ -272,12 +273,12 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
                 alignItems: "center",
                 gap: "6px",
                 padding: "6px 12px",
-                background: "#fff",
-                border: "1px solid #e0e0e0",
+                background: isDark ? "#1a1a1a" : "#fff",
+                border: `1px solid ${isDark ? "#333" : "#e0e0e0"}`,
                 borderRadius: "6px",
                 fontSize: "13px",
                 fontWeight: 500,
-                color: "#333",
+                color: isDark ? "#ddd" : "#333",
                 textDecoration: "none",
                 transition: "all 0.2s",
               }}
@@ -299,11 +300,11 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
 
       {/* Guidelines */}
       {component.guidelines && (
-        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: "1px solid #e8e8e8" }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: "#1a1a1a" }}>
+        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: `1px solid ${isDark ? "#333" : "#e8e8e8"}` }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1a1a1a" }}>
             Guidelines
           </h3>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#555", margin: 0 }}>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: isDark ? "#999" : "#555", margin: 0 }}>
             {component.guidelines}
           </p>
         </div>
@@ -311,11 +312,11 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
 
       {/* Usage */}
       {component.usage && (
-        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: "1px solid #e8e8e8" }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: "#1a1a1a" }}>
+        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: `1px solid ${isDark ? "#333" : "#e8e8e8"}` }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1a1a1a" }}>
             Usage
           </h3>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap", margin: 0 }}>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: isDark ? "#999" : "#555", whiteSpace: "pre-wrap", margin: 0 }}>
             {component.usage}
           </p>
         </div>
@@ -323,11 +324,11 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
 
       {/* Do's and Don'ts */}
       {component.dosAndDonts && (
-        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: "1px solid #e8e8e8" }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: "#1a1a1a" }}>
+        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: `1px solid ${isDark ? "#333" : "#e8e8e8"}` }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1a1a1a" }}>
             Do's and Don'ts
           </h3>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap", margin: 0 }}>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: isDark ? "#999" : "#555", whiteSpace: "pre-wrap", margin: 0 }}>
             {component.dosAndDonts}
           </p>
         </div>
@@ -335,11 +336,11 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
 
       {/* Accessibility */}
       {component.accessibilityInfo && (
-        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: "1px solid #e8e8e8" }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: "#1a1a1a" }}>
+        <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: `1px solid ${isDark ? "#333" : "#e8e8e8"}` }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1a1a1a" }}>
             Accessibility
           </h3>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap", margin: 0 }}>
+          <p style={{ fontSize: "14px", lineHeight: 1.6, color: isDark ? "#999" : "#555", whiteSpace: "pre-wrap", margin: 0 }}>
             {component.accessibilityInfo}
           </p>
         </div>
@@ -348,10 +349,10 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
       {/* Documentation */}
       {component._rawDocumentation && component._rawDocumentation.length > 0 && (
         <div>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: "#1a1a1a" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1a1a1a" }}>
             Documentation
           </h3>
-          {component._rawDocumentation.map((block, i) => renderBlock(block, i))}
+          {component._rawDocumentation.map((block, i) => renderBlock(block, i, isDark))}
         </div>
       )}
     </div>
@@ -359,13 +360,15 @@ const ComponentCard: React.FC<{ component: ComponentData }> = ({ component }) =>
 };
 
 const ComparisonView: React.FC<Props> = ({ first, second }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   return (
     <div
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
         gap: "40px",
-        borderTop: "1px solid #e8e8e8",
+        borderTop: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
         paddingTop: "32px",
         position: "relative",
       }}
@@ -383,8 +386,8 @@ const ComparisonView: React.FC<Props> = ({ first, second }) => {
         }}
       />
 
-      <ComponentCard component={first} />
-      <ComponentCard component={second} />
+      <ComponentCard component={first} isDark={isDark} />
+      <ComponentCard component={second} isDark={isDark} />
     </div>
   );
 };

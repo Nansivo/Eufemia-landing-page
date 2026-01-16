@@ -1,34 +1,37 @@
 const path = require("path");
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 
   const typeDefs = `
-    type SanityComponent implements Node {
+    type SanityDesignTokens implements Node {
+      title: String
+      tokens: [SanityToken]
+      lastUpdated: String
+      sourceFile: String
+    }
+
+    type SanityToken {
+      id: String
       name: String
-      platform: String
-      shortDescription: String
-      previewImage: SanityImage
-      guidelines: String
-      usage: String
-      dosAndDonts: String
-      accessibilityInfo: String
-      status: String
-      figmaLink: String
-      githubLink: String
-      slug: SanitySlug
+      type: String
+      description: String
+      collection: String
+      colorValues: [SanityColorValue]
     }
 
-    type SanityImage {
-      asset: SanityAsset
+    type SanityColorValue {
+      modeName: String
+      hex: String
+      rgb: SanityRGB
     }
 
-    type SanityAsset {
-      url: String
-    }
-
-    type SanitySlug {
-      current: String
+    type SanityRGB {
+      r: Float
+      g: Float
+      b: Float
+      a: Float
     }
   `;
 
@@ -59,6 +62,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   }
 
   const componentTemplate = path.resolve("./src/templates/component.tsx");
+  const designTokensTemplate = path.resolve("./src/pages/docs/design-tokens.tsx");
   const components = result.data.allSanityComponent.nodes;
 
   components.forEach((component) => {
@@ -78,5 +82,43 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     });
 
     reporter.info(`Created component page: ${pagePath}`);
+  });
+
+  // Fetch design tokens from Sanity API
+  let designTokensData = [];
+  let lastUpdated = null;
+  try {
+    const query = '*[_type == "designTokens"][0]';
+    const url = `https://sy4b7kpu.api.sanity.io/v2023-11-21/data/query/production?query=${encodeURIComponent(query)}`;
+
+    reporter.info("Fetching design tokens from Sanity...");
+    const response = await fetch(url);
+
+    if (response.ok) {
+      const result = await response.json();
+      if (result.result && result.result.tokens) {
+        designTokensData = result.result.tokens;
+        lastUpdated = result.result.lastUpdated;
+        reporter.info(`Fetched ${designTokensData.length} design tokens`);
+      }
+    }
+  } catch (error) {
+    reporter.warn(`Failed to fetch design tokens: ${error.message}`);
+  }
+
+  // Create design tokens pages for each platform
+  const platforms = ["ios", "android"];
+  platforms.forEach((platform) => {
+    const tokensPath = `/docs/${platform}/design-tokens`;
+    createPage({
+      path: tokensPath,
+      component: designTokensTemplate,
+      context: {
+        platform,
+        designTokens: designTokensData,
+        lastUpdated,
+      },
+    });
+    reporter.info(`Created design tokens page: ${tokensPath}`);
   });
 };

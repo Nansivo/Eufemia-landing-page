@@ -1,5 +1,6 @@
 import React from "react";
 import Layout from "../components/Layout";
+import { useTheme } from "../context/ThemeContext";
 
 const changelog = [
   {
@@ -82,6 +83,8 @@ const getTypeStyles = (type: string) => {
 };
 
 const ChangelogPage: React.FC = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   return (
     <Layout currentPath="/changelog">
       <div style={{ padding: "48px 40px", maxWidth: "900px" }}>
@@ -105,7 +108,7 @@ const ChangelogPage: React.FC = () => {
             style={{
               fontSize: "42px",
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: isDark ? "#fff" : "#1a1a1a",
               marginBottom: "16px",
               lineHeight: 1.2,
               letterSpacing: "-0.5px",
@@ -117,7 +120,7 @@ const ChangelogPage: React.FC = () => {
             style={{
               fontSize: "18px",
               lineHeight: 1.7,
-              color: "#555",
+              color: isDark ? "#999" : "#555",
               maxWidth: "700px",
             }}
           >
@@ -134,21 +137,21 @@ const ChangelogPage: React.FC = () => {
               id={release.version.replace(/\./g, "-")}
               style={{
                 padding: "28px",
-                background: "#fff",
-                border: "1px solid #e8e8e8",
+                background: isDark ? "#1a1a1a" : "#fff",
+                border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
                 borderRadius: "16px",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-                <h2 style={{ fontSize: "22px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>
+                <h2 style={{ fontSize: "22px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", margin: 0 }}>
                   v{release.version}
                 </h2>
                 <span
                   style={{
                     fontSize: "13px",
-                    color: "#888",
+                    color: isDark ? "#999" : "#888",
                     padding: "4px 12px",
-                    background: "#fafafa",
+                    background: isDark ? "#222" : "#fafafa",
                     borderRadius: "6px",
                   }}
                 >
@@ -166,7 +169,7 @@ const ChangelogPage: React.FC = () => {
                         alignItems: "flex-start",
                         gap: "12px",
                         padding: "12px 16px",
-                        background: "#fafafa",
+                        background: isDark ? "#222" : "#fafafa",
                         borderRadius: "8px",
                       }}
                     >
@@ -184,7 +187,7 @@ const ChangelogPage: React.FC = () => {
                       >
                         {typeStyles.label}
                       </span>
-                      <p style={{ fontSize: "14px", color: "#444", lineHeight: 1.5, margin: 0 }}>
+                      <p style={{ fontSize: "14px", color: isDark ? "#999" : "#444", lineHeight: 1.5, margin: 0 }}>
                         {change.description}
                       </p>
                     </div>
@@ -200,12 +203,12 @@ const ChangelogPage: React.FC = () => {
           style={{
             marginTop: "48px",
             padding: "24px",
-            background: "#fafafa",
+            background: isDark ? "#1a1a1a" : "#fafafa",
             borderRadius: "12px",
             textAlign: "center",
           }}
         >
-          <p style={{ fontSize: "14px", color: "#666", margin: 0 }}>
+          <p style={{ fontSize: "14px", color: isDark ? "#999" : "#666", margin: 0 }}>
             For the complete changelog history, check the{" "}
             <a
               href="https://github.com/dnbexperience/eufemia/releases"

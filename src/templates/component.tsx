@@ -1,6 +1,7 @@
 import React from "react";
 import { graphql, Link } from "gatsby";
 import Layout from "../components/Layout";
+import { useTheme } from "../context/ThemeContext";
 
 interface BlockChild {
   _key: string;
@@ -21,22 +22,32 @@ interface Block {
 }
 
 interface ComponentData {
-  name: string;
-  platform: string;
-  shortDescription: string | null;
-  _rawDocumentation: Block[] | null;
-  previewImage?: {
-    asset?: {
-      url?: string;
-    };
-  };
+  id: string;
+  name?: string;
+  platform?: string;
+  shortDescription?: string;
+  figmaLink?: string;
+  githubLink?: string;
   guidelines?: string | null;
   usage?: string | null;
   dosAndDonts?: string | null;
   accessibilityInfo?: string | null;
-  status?: string | null;
-  figmaLink: string | null;
-  githubLink: string | null;
+  _rawDocumentation?: Block[] | null;
+  _rawPreviewImage?: {
+    light?: {
+      asset?: {
+        _ref?: string;
+        url?: string;
+      };
+    };
+    dark?: {
+      asset?: {
+        _ref?: string;
+        url?: string;
+      };
+    };
+  } | null;
+  [key: string]: any;
 }
 
 interface Props {
@@ -53,7 +64,7 @@ const buildImageUrl = (ref: string) => {
 };
 
 // Simple portable text renderer
-const renderBlock = (block: Block, index: number) => {
+const renderBlock = (block: Block, index: number, isDark: boolean) => {
   // Handle images
   if (block._type === "image" && block.asset?._ref) {
     const imageUrl = buildImageUrl(block.asset._ref);
@@ -64,7 +75,7 @@ const renderBlock = (block: Block, index: number) => {
           margin: "24px 0",
           borderRadius: "8px",
           overflow: "hidden",
-          border: "1px solid #e8e8e8",
+          border: `1px solid ${isDark ? '#333' : '#e8e8e8'}`,
         }}
       >
         <img
@@ -94,10 +105,11 @@ const renderBlock = (block: Block, index: number) => {
         <code
           key={i}
           style={{
-            background: "#f5f5f5",
+            background: isDark ? "#222" : "#f5f5f5",
             padding: "2px 6px",
             borderRadius: "4px",
             fontSize: "14px",
+            color: isDark ? "#ccc" : "#333",
           }}
         >
           {child.text}
@@ -115,7 +127,7 @@ const renderBlock = (block: Block, index: number) => {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: isDark ? "#fff" : "#1a1a1a",
             marginTop: "32px",
             marginBottom: "16px",
           }}
@@ -130,7 +142,7 @@ const renderBlock = (block: Block, index: number) => {
           style={{
             fontSize: "20px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: isDark ? "#fff" : "#1a1a1a",
             marginTop: "24px",
             marginBottom: "12px",
           }}
@@ -145,7 +157,7 @@ const renderBlock = (block: Block, index: number) => {
           style={{
             fontSize: "16px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: isDark ? "#fff" : "#1a1a1a",
             marginTop: "20px",
             marginBottom: "8px",
           }}
@@ -160,7 +172,7 @@ const renderBlock = (block: Block, index: number) => {
           style={{
             fontSize: "16px",
             lineHeight: 1.7,
-            color: "#444",
+            color: isDark ? "#ccc" : "#444",
             marginBottom: "16px",
           }}
         >
@@ -202,12 +214,25 @@ const GitHubIcon = () => (
 
 const ComponentTemplate: React.FC<Props> = ({ data }) => {
   const component = data.sanityComponent;
-  const platformLabel = component.platform === "ios" ? "iOS" : "Android";
-  const platformPath = `/docs/${component.platform}`;
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === 'dark';
+
+  if (!component.name) {
+    return (
+      <Layout currentPlatform="ios" currentPath="/docs/ios/components">
+        <div style={{ padding: "48px 40px" }}>
+          <p>Error: Component not found</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  const platformLabel = (component.platform === "ios" ? "iOS" : "Android") || "Unknown";
+  const platformPath = `/docs/${component.platform || "ios"}`;
 
   return (
     <Layout currentPlatform={component.platform as "ios" | "android"} currentPath={`${platformPath}/components`}>
-      <div style={{ padding: "48px 40px", maxWidth: "800px" }}>
+      <div style={{ padding: "48px 40px", maxWidth: "800px", background: isDark ? "#0a0a0a" : "#fff", color: isDark ? "#fff" : "#000", minHeight: "100vh" }}>
         {/* Breadcrumb */}
         <div
           style={{
@@ -215,7 +240,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
             alignItems: "center",
             gap: "8px",
             fontSize: "14px",
-            color: "#666",
+            color: isDark ? "#999" : "#666",
             marginBottom: "24px",
           }}
         >
@@ -225,7 +250,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
           <span>/</span>
           <span>Components</span>
           <span>/</span>
-          <span style={{ color: "#1a1a1a" }}>{component.name}</span>
+          <span style={{ color: isDark ? "#fff" : "#1a1a1a" }}>{component.name}</span>
         </div>
 
         {/* Header */}
@@ -248,7 +273,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
             style={{
               fontSize: "36px",
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: isDark ? "#fff" : "#1a1a1a",
               marginBottom: "12px",
               letterSpacing: "-0.5px",
             }}
@@ -260,7 +285,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
               style={{
                 fontSize: "18px",
                 lineHeight: 1.6,
-                color: "#555",
+                color: isDark ? "#ccc" : "#555",
                 maxWidth: "600px",
               }}
             >
@@ -268,6 +293,42 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
             </p>
           )}
         </div>
+
+        {/* Preview Images */}
+        {(component._rawPreviewImage?.light?.asset || component._rawPreviewImage?.dark?.asset) && (
+          <div
+            style={{
+              marginBottom: "40px",
+              paddingBottom: "32px",
+              borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}`,
+            }}
+          >
+            {theme === "light" && component._rawPreviewImage?.light?.asset && (
+              <div>
+                <div style={{ fontSize: "12px", fontWeight: 500, marginBottom: "8px", color: isDark ? "#999" : "#666" }}>
+                  Light Mode
+                </div>
+                <img
+                  src={component._rawPreviewImage.light.asset.url || buildImageUrl(component._rawPreviewImage.light.asset._ref || "")}
+                  alt="Preview - Light Mode"
+                  style={{ width: "100%", height: "auto", borderRadius: "8px", border: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}
+                />
+              </div>
+            )}
+            {theme === "dark" && component._rawPreviewImage?.dark?.asset && (
+              <div>
+                <div style={{ fontSize: "12px", fontWeight: 500, marginBottom: "8px", color: isDark ? "#999" : "#666" }}>
+                  Dark Mode
+                </div>
+                <img
+                  src={component._rawPreviewImage.dark.asset.url || buildImageUrl(component._rawPreviewImage.dark.asset._ref || "")}
+                  alt="Preview - Dark Mode"
+                  style={{ width: "100%", height: "auto", borderRadius: "8px", border: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}
+                />
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Links */}
         {(component.figmaLink || component.githubLink) && (
@@ -277,7 +338,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
               gap: "12px",
               marginBottom: "40px",
               paddingBottom: "32px",
-              borderBottom: "1px solid #e8e8e8",
+              borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}`,
             }}
           >
             {component.figmaLink && (
@@ -290,12 +351,12 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
                   alignItems: "center",
                   gap: "8px",
                   padding: "8px 14px",
-                  background: "#fff",
-                  border: "1px solid #e0e0e0",
+                  background: isDark ? "#1a1a1a" : "#fff",
+                  border: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
                   borderRadius: "6px",
                   fontSize: "14px",
                   fontWeight: 500,
-                  color: "#333",
+                  color: isDark ? "#ccc" : "#333",
                   textDecoration: "none",
                 }}
               >
@@ -313,12 +374,12 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
                   alignItems: "center",
                   gap: "8px",
                   padding: "8px 14px",
-                  background: "#fff",
-                  border: "1px solid #e0e0e0",
+                  background: isDark ? "#1a1a1a" : "#fff",
+                  border: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
                   borderRadius: "6px",
                   fontSize: "14px",
                   fontWeight: 500,
-                  color: "#333",
+                  color: isDark ? "#ccc" : "#333",
                   textDecoration: "none",
                 }}
               >
@@ -336,21 +397,21 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
                 alignItems: "center",
                 gap: "8px",
                 padding: "8px 14px",
-                background: "#f0f7f7",
-                border: "1px solid #b3dede",
+                background: isDark ? "#1a3333" : "#f0f7f7",
+                border: isDark ? "1px solid #1a5c5c" : "1px solid #b3dede",
                 borderRadius: "6px",
                 fontSize: "14px",
                 fontWeight: 500,
-                color: "#007272",
+                color: isDark ? "#66c9c9" : "#007272",
                 cursor: "pointer",
                 textDecoration: "none",
                 transition: "all 0.2s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#e6f2f2";
+                e.currentTarget.style.background = isDark ? "#1a4c4c" : "#e6f2f2";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#f0f7f7";
+                e.currentTarget.style.background = isDark ? "#1a3333" : "#f0f7f7";
               }}
             >
               ↔ Compare
@@ -358,99 +419,48 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
           </div>
         )}
 
-        {/* Preview Image */}
-        {component.previewImage?.asset?.url && (
-          <div
-            style={{
-              marginBottom: "40px",
-              borderRadius: "8px",
-              overflow: "hidden",
-              border: "1px solid #e8e8e8",
-            }}
-          >
-            <img
-              src={component.previewImage.asset.url}
-              alt={component.name}
-              style={{
-                width: "100%",
-                height: "auto",
-                display: "block",
-              }}
-            />
-          </div>
-        )}
-
-        {/* Status Badge */}
-        {component.status && (
-          <div
-            style={{
-              display: "inline-block",
-              padding: "6px 12px",
-              background: "#f0f0f0",
-              borderRadius: "4px",
-              fontSize: "13px",
-              fontWeight: 500,
-              color: "#666",
-              marginBottom: "32px",
-            }}
-          >
-            Status: {component.status}
-          </div>
-        )}
-
-        {/* Guidelines */}
+        {/* Guidelines Section */}
         {component.guidelines && (
-          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: "1px solid #e8e8e8" }}>
-            <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: 0, color: "#1a1a1a" }}>
-              Guidelines
-            </h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap" }}>
-              {component.guidelines}
-            </p>
+          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
+            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "16px" }}>Guidelines</h2>
+            <p style={{ fontSize: "16px", lineHeight: 1.7, color: isDark ? "#ccc" : "#444", marginBottom: "16px", whiteSpace: "pre-wrap" }}>{component.guidelines}</p>
           </div>
         )}
 
-        {/* Usage */}
+        {/* Usage Section */}
         {component.usage && (
-          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: "1px solid #e8e8e8" }}>
-            <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: 0, color: "#1a1a1a" }}>
-              How to Use
-            </h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap" }}>
-              {component.usage}
-            </p>
+          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
+            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "16px" }}>Usage</h2>
+            <p style={{ fontSize: "16px", lineHeight: 1.7, color: isDark ? "#ccc" : "#444", marginBottom: "16px", whiteSpace: "pre-wrap" }}>{component.usage}</p>
           </div>
         )}
 
-        {/* Do's and Don'ts */}
+        {/* Dos and Don'ts Section */}
         {component.dosAndDonts && (
-          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: "1px solid #e8e8e8" }}>
-            <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: 0, color: "#1a1a1a" }}>
-              Do's and Don'ts
-            </h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap" }}>
-              {component.dosAndDonts}
-            </p>
+          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
+            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "16px" }}>Dos and Don'ts</h2>
+            <p style={{ fontSize: "16px", lineHeight: 1.7, color: isDark ? "#ccc" : "#444", marginBottom: "16px", whiteSpace: "pre-wrap" }}>{component.dosAndDonts}</p>
           </div>
         )}
 
-        {/* Accessibility */}
+        {/* Accessibility Info Section */}
         {component.accessibilityInfo && (
-          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: "1px solid #e8e8e8" }}>
-            <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "12px", marginTop: 0, color: "#1a1a1a" }}>
-              Accessibility
-            </h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.6, color: "#555", whiteSpace: "pre-wrap" }}>
-              {component.accessibilityInfo}
-            </p>
+          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
+            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "16px" }}>Accessibility</h2>
+            <p style={{ fontSize: "16px", lineHeight: 1.7, color: isDark ? "#ccc" : "#444", marginBottom: "16px", whiteSpace: "pre-wrap" }}>{component.accessibilityInfo}</p>
           </div>
         )}
 
-        {/* Documentation content */}
-        <div>{component._rawDocumentation?.map((block, i) => renderBlock(block, i))}</div>
+        {/* Main Documentation content */}
+        {component._rawDocumentation && component._rawDocumentation.length > 0 && (
+          <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
+            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "16px" }}>Documentation</h2>
+            <div>{component._rawDocumentation.map((block, i) => renderBlock(block, i, isDark))}</div>
+          </div>
+        )}
 
         {/* Back link */}
-        <div style={{ marginTop: "48px", paddingTop: "24px", borderTop: "1px solid #e8e8e8" }}>
+        <div style={{ marginTop: "48px", paddingTop: "24px", borderTop: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
           <Link
             to={platformPath}
             style={{
@@ -476,28 +486,24 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
 export default ComponentTemplate;
 
 export const Head: React.FC<Props> = ({ data }) => (
-  <title>{data.sanityComponent.name} | Eufemia Design System</title>
+  <title>Component | Eufemia Design System</title>
 );
 
 export const query = graphql`
   query ComponentQuery($id: String!) {
     sanityComponent(id: { eq: $id }) {
+      id
       name
       platform
       shortDescription
-      _rawDocumentation
-      previewImage {
-        asset {
-          url
-        }
-      }
+      figmaLink
+      githubLink
       guidelines
       usage
       dosAndDonts
       accessibilityInfo
-      status
-      figmaLink
-      githubLink
+      _rawDocumentation
+      _rawPreviewImage
     }
   }
 `;

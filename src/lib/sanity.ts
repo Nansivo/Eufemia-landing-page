@@ -76,3 +76,37 @@ export async function fetchComponentsForSearch(): Promise<SearchableComponent[]>
     return [];
   }
 }
+
+/**
+ * Fetch design tokens for search
+ * Tokens are available at /docs/{platform}/design-tokens
+ */
+export async function fetchTokensForSearch(): Promise<SearchableComponent[]> {
+  try {
+    // Design tokens pages are always available
+    // Return both iOS and Android design token page links
+    const results: SearchableComponent[] = [
+      {
+        id: `design-tokens-ios`,
+        title: "Design Tokens (iOS)",
+        description: "Browse and copy design tokens for iOS designs",
+        path: `/docs/ios/design-tokens`,
+        category: "Design System",
+        external: false,
+      },
+      {
+        id: `design-tokens-android`,
+        title: "Design Tokens (Android)",
+        description: "Browse and copy design tokens for Android designs",
+        path: `/docs/android/design-tokens`,
+        category: "Design System",
+        external: false,
+      },
+    ];
+
+    return results;
+  } catch (error) {
+    console.error("Error fetching tokens for search:", error);
+    return [];
+  }
+}

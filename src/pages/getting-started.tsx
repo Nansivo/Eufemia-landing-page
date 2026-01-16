@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "gatsby";
 import Layout from "../components/Layout";
+import { useTheme } from "../context/ThemeContext";
 
 const ArrowIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
@@ -82,6 +83,8 @@ const resources = [
 const GettingStartedPage: React.FC = () => {
   const [hoveredPath, setHoveredPath] = React.useState<number | null>(null);
   const [hoveredResource, setHoveredResource] = React.useState<string | null>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
     <Layout currentPath="/getting-started">
@@ -106,7 +109,7 @@ const GettingStartedPage: React.FC = () => {
             style={{
               fontSize: "42px",
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: isDark ? "#fff" : "#1a1a1a",
               marginBottom: "16px",
               lineHeight: 1.2,
               letterSpacing: "-0.5px",
@@ -118,7 +121,7 @@ const GettingStartedPage: React.FC = () => {
             style={{
               fontSize: "18px",
               lineHeight: 1.7,
-              color: "#555",
+              color: isDark ? "#999" : "#555",
               maxWidth: "700px",
             }}
           >
@@ -204,7 +207,7 @@ const GettingStartedPage: React.FC = () => {
         <div
           style={{
             height: "1px",
-            background: "linear-gradient(90deg, transparent, #e0e0e0, transparent)",
+            background: `linear-gradient(90deg, transparent, ${isDark ? "#444" : "#e0e0e0"}, transparent)`,
             margin: "48px 0",
           }}
         />
@@ -221,7 +224,7 @@ const GettingStartedPage: React.FC = () => {
         >
           Choose your platform
         </h2>
-        <p style={{ fontSize: "16px", color: "#666", marginBottom: "24px" }}>
+        <p style={{ fontSize: "16px", color: isDark ? "#999" : "#666", marginBottom: "24px" }}>
           Eufemia is available across multiple platforms. Select the one that matches your project.
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "48px" }}>
@@ -232,8 +235,8 @@ const GettingStartedPage: React.FC = () => {
               style={{
                 display: "block",
                 padding: "24px",
-                background: "#fff",
-                border: "1px solid #e8e8e8",
+                background: isDark ? "#1a1a1a" : "#fff",
+                border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
                 borderRadius: "12px",
                 textDecoration: "none",
                 transition: "all 0.2s ease",
@@ -264,7 +267,7 @@ const GettingStartedPage: React.FC = () => {
                   {platform.status}
                 </span>
               </div>
-              <p style={{ fontSize: "14px", color: "#666", lineHeight: 1.5, margin: 0 }}>
+              <p style={{ fontSize: "14px", color: isDark ? "#999" : "#666", lineHeight: 1.5, margin: 0 }}>
                 {platform.description}
               </p>
             </Link>
@@ -275,7 +278,7 @@ const GettingStartedPage: React.FC = () => {
         <div
           style={{
             height: "1px",
-            background: "linear-gradient(90deg, transparent, #e0e0e0, transparent)",
+            background: `linear-gradient(90deg, transparent, ${isDark ? "#444" : "#e0e0e0"}, transparent)`,
             margin: "48px 0",
           }}
         />
@@ -304,8 +307,8 @@ const GettingStartedPage: React.FC = () => {
                 alignItems: "center",
                 justifyContent: "space-between",
                 padding: "20px",
-                background: hoveredResource === resource.title ? "#fafafa" : "#fff",
-                border: "1px solid #e8e8e8",
+                background: hoveredResource === resource.title ? isDark ? "#222" : "#fafafa" : isDark ? "#1a1a1a" : "#fff",
+                border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
                 borderRadius: "8px",
                 textDecoration: "none",
                 transition: "all 0.15s ease",
@@ -315,7 +318,7 @@ const GettingStartedPage: React.FC = () => {
                 <h3 style={{ fontSize: "15px", fontWeight: 600, color: "#007272", marginBottom: "4px" }}>
                   {resource.title}
                 </h3>
-                <p style={{ fontSize: "13px", color: "#666", margin: 0 }}>
+                <p style={{ fontSize: "13px", color: isDark ? "#999" : "#666", margin: 0 }}>
                   {resource.description}
                 </p>
               </div>

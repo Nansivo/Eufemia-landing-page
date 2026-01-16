@@ -45,12 +45,9 @@ export default defineType({
     }),
     defineField({
       name: 'previewImage',
-      title: 'Preview Image',
-      type: 'image',
-      description: 'Main visual preview of the component',
-      options: {
-        hotspot: true,
-      },
+      title: 'Preview Images',
+      type: 'previewImage',
+      description: 'Preview images for light and dark modes',
     }),
     defineField({
       name: 'guidelines',

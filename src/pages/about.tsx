@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "gatsby";
 import Layout from "../components/Layout";
+import { useTheme } from "../context/ThemeContext";
 
 const ArrowIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
@@ -62,6 +63,8 @@ const team = [
 
 const AboutPage: React.FC = () => {
   const [hoveredPrinciple, setHoveredPrinciple] = React.useState<number | null>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
     <Layout currentPath="/about">
@@ -86,7 +89,7 @@ const AboutPage: React.FC = () => {
             style={{
               fontSize: "42px",
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: isDark ? "#fff" : "#1a1a1a",
               marginBottom: "16px",
               lineHeight: 1.2,
               letterSpacing: "-0.5px",
@@ -98,7 +101,7 @@ const AboutPage: React.FC = () => {
             style={{
               fontSize: "18px",
               lineHeight: 1.7,
-              color: "#555",
+              color: isDark ? "#999" : "#555",
               maxWidth: "700px",
             }}
           >
@@ -155,8 +158,8 @@ const AboutPage: React.FC = () => {
               onMouseLeave={() => setHoveredPrinciple(null)}
               style={{
                 padding: "24px",
-                background: "#fff",
-                border: "1px solid #e8e8e8",
+                background: isDark ? "#1a1a1a" : "#fff",
+                border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
                 borderRadius: "12px",
                 transform: hoveredPrinciple === index ? "translateY(-2px)" : "translateY(0)",
                 boxShadow: hoveredPrinciple === index
@@ -170,12 +173,12 @@ const AboutPage: React.FC = () => {
                   width: "48px",
                   height: "48px",
                   borderRadius: "12px",
-                  background: hoveredPrinciple === index ? "#007272" : "#f5f5f5",
+                  background: hoveredPrinciple === index ? "#007272" : isDark ? "#222" : "#f5f5f5",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   marginBottom: "16px",
-                  color: hoveredPrinciple === index ? "#fff" : "#666",
+                  color: hoveredPrinciple === index ? "#fff" : isDark ? "#999" : "#666",
                   transition: "all 0.2s ease",
                 }}
               >
@@ -184,7 +187,7 @@ const AboutPage: React.FC = () => {
               <h3 style={{ fontSize: "16px", fontWeight: 600, color: "#1a1a1a", marginBottom: "8px" }}>
                 {principle.title}
               </h3>
-              <p style={{ fontSize: "14px", color: "#666", lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: "14px", color: isDark ? "#999" : "#666", lineHeight: 1.6, margin: 0 }}>
                 {principle.description}
               </p>
             </div>
@@ -195,7 +198,7 @@ const AboutPage: React.FC = () => {
         <div
           style={{
             height: "1px",
-            background: "linear-gradient(90deg, transparent, #e0e0e0, transparent)",
+            background: `linear-gradient(90deg, transparent, ${isDark ? "#444" : "#e0e0e0"}, transparent)`,
             margin: "48px 0",
           }}
         />
@@ -221,14 +224,14 @@ const AboutPage: React.FC = () => {
               key={member.role}
               style={{
                 padding: "20px",
-                background: "#fafafa",
+                background: isDark ? "#1a1a1a" : "#fafafa",
                 borderRadius: "8px",
               }}
             >
               <h3 style={{ fontSize: "15px", fontWeight: 600, color: "#007272", marginBottom: "6px" }}>
                 {member.role}
               </h3>
-              <p style={{ fontSize: "14px", color: "#666", lineHeight: 1.5, margin: 0 }}>
+              <p style={{ fontSize: "14px", color: isDark ? "#999" : "#666", lineHeight: 1.5, margin: 0 }}>
                 {member.description}
               </p>
             </div>
@@ -239,7 +242,7 @@ const AboutPage: React.FC = () => {
         <div
           style={{
             padding: "32px",
-            background: "#fafafa",
+            background: isDark ? "#1a1a1a" : "#fafafa",
             borderRadius: "16px",
             textAlign: "center",
           }}
@@ -247,7 +250,7 @@ const AboutPage: React.FC = () => {
           <h3 style={{ fontSize: "20px", fontWeight: 600, color: "#1a1a1a", marginBottom: "12px" }}>
             Ready to get started?
           </h3>
-          <p style={{ fontSize: "15px", color: "#666", marginBottom: "20px" }}>
+          <p style={{ fontSize: "15px", color: isDark ? "#999" : "#666", marginBottom: "20px" }}>
             Jump into our getting started guide and start building with Eufemia today.
           </p>
           <Link

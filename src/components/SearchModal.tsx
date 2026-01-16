@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { navigate } from "gatsby";
-import { fetchComponentsForSearch } from "../lib/sanity";
+import { fetchComponentsForSearch, fetchTokensForSearch } from "../lib/sanity";
+import { useTheme } from "../context/ThemeContext";
 
 interface SearchResult {
   title: string;
@@ -44,10 +45,13 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [cmsComponents, setCmsComponents] = useState<SearchResult[]>([]);
+  const [cmsTokens, setCmsTokens] = useState<SearchResult[]>([]);
   const [isLoadingCMS, setIsLoadingCMS] = useState(false);
   const [currentComponent, setCurrentComponent] = useState<{ platform: string; slug: string } | null>(null);
   const [isCompareMode, setIsCompareMode] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   // Detect if user is trying to enter compare mode
   const isCompareModeQuery = query.toLowerCase().startsWith("/compare");
@@ -59,7 +63,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
     setIsCompareMode(newIsCompareMode);
   }, [isCompareModeQuery, currentComponent, initialCompareMode]);
 
-  const searchableContent: SearchResult[] = [...cmsComponents, ...staticPages];
+  const searchableContent: SearchResult[] = [...cmsComponents, ...cmsTokens, ...staticPages];
 
   // Mark current page
   if (currentComponent) {
@@ -126,8 +130,12 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
     const loadCMSComponents = async () => {
       setIsLoadingCMS(true);
       try {
-        const components = await fetchComponentsForSearch();
+        const [components, tokens] = await Promise.all([
+          fetchComponentsForSearch(),
+          fetchTokensForSearch(),
+        ]);
         setCmsComponents(components);
+        setCmsTokens(tokens);
 
         // If we're on a component page, find the exact matching component
         if (detectedComponent) {
@@ -234,9 +242,9 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
           transform: `translateX(-50%) ${isAnimating ? "translateY(0)" : "translateY(-10px)"}`,
           width: "100%",
           maxWidth: "600px",
-          background: "#fff",
+          background: isDark ? "#1a1a1a" : "#fff",
           borderRadius: "12px",
-          border: "1px solid #e0e0e0",
+          border: `1px solid ${isDark ? "#333" : "#e0e0e0"}`,
           boxShadow: "0 16px 48px rgba(0, 0, 0, 0.15)",
           zIndex: 1001,
           overflow: "hidden",
@@ -285,7 +293,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
               border: "none",
               outline: "none",
               fontSize: "16px",
-              color: "#1a1a1a",
+              color: isDark ? "#fff" : "#1a1a1a",
               background: "transparent",
             }}
           />
@@ -334,17 +342,17 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
                       }}
                       style={{
                         padding: "8px 14px",
-                        background: "#f5f5f5",
+                        background: isDark ? "#222" : "#f5f5f5",
                         border: "none",
                         borderRadius: "6px",
                         cursor: "pointer",
                         fontSize: "13px",
                         fontWeight: 500,
-                        color: "#333",
+                        color: isDark ? "#ddd" : "#333",
                         transition: "background 0.15s ease",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#eee";
+                        e.currentTarget.style.background = isDark ? "#333" : "#eee";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background = "#f5f5f5";
@@ -376,7 +384,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
                         borderRadius: "6px",
                         cursor: "pointer",
                         fontSize: "14px",
-                        color: "#555",
+                        color: isDark ? "#999" : "#555",
                         textAlign: "left",
                         transition: "background 0.15s ease",
                       }}
@@ -419,7 +427,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
                     style={{
                       fontSize: "11px",
                       fontWeight: 600,
-                      color: "#888",
+                      color: isDark ? "#999" : "#888",
                       textTransform: "uppercase",
                       padding: "6px 8px",
                       letterSpacing: "0.5px",
@@ -499,7 +507,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
                           <div
                             style={{
                               fontSize: "13px",
-                              color: "#888",
+                              color: isDark ? "#999" : "#888",
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
@@ -512,11 +520,11 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
                           <kbd
                             style={{
                               padding: "2px 6px",
-                              background: "#e8e8e8",
+                              background: isDark ? "#333" : "#e8e8e8",
                               borderRadius: "4px",
                               fontSize: "11px",
                               fontWeight: 500,
-                              color: "#666",
+                              color: isDark ? "#999" : "#666",
                               flexShrink: 0,
                             }}
                           >
@@ -539,20 +547,20 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
             alignItems: "center",
             justifyContent: "space-between",
             padding: "10px 16px",
-            background: "#fafafa",
-            borderTop: "1px solid #eee",
+            background: isDark ? "#1a1a1a" : "#fafafa",
+            borderTop: `1px solid ${isDark ? "#333" : "#eee"}`,
             fontSize: "12px",
-            color: "#888",
+            color: isDark ? "#999" : "#888",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              <kbd style={{ padding: "2px 5px", background: "#fff", borderRadius: "3px", border: "1px solid #ddd", fontSize: "11px" }}>↑</kbd>
-              <kbd style={{ padding: "2px 5px", background: "#fff", borderRadius: "3px", border: "1px solid #ddd", fontSize: "11px" }}>↓</kbd>
+              <kbd style={{ padding: "2px 5px", background: isDark ? "#1a1a1a" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↑</kbd>
+              <kbd style={{ padding: "2px 5px", background: isDark ? "#1a1a1a" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↓</kbd>
               Navigate
             </span>
             <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              <kbd style={{ padding: "2px 5px", background: "#fff", borderRadius: "3px", border: "1px solid #ddd", fontSize: "11px" }}>↵</kbd>
+              <kbd style={{ padding: "2px 5px", background: isDark ? "#1a1a1a" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↵</kbd>
               Open
             </span>
           </div>

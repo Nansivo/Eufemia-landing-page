@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, navigate } from "gatsby";
+import { useTheme } from "../context/ThemeContext";
 
 type Platform = "web" | "ios" | "android" | null;
 
@@ -21,11 +22,13 @@ const webNavItems = [
 const iosNavItems = [
   { label: "Overview", path: "/docs/ios", isHome: true },
   { label: "Components", path: "/docs/ios/components" },
+  { label: "Design Tokens", path: "/docs/ios/design-tokens" },
 ];
 
 const androidNavItems = [
   { label: "Overview", path: "/docs/android", isHome: true },
   { label: "Components", path: "/docs/android/components" },
+  { label: "Design Tokens", path: "/docs/android/design-tokens" },
 ];
 
 const ChevronIcon = ({ rotated = false }: { rotated?: boolean }) => (
@@ -56,6 +59,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const navItems =
     currentPlatform === "web"
@@ -82,8 +87,8 @@ const Sidebar: React.FC<SidebarProps> = ({
         position: "fixed",
         top: "56px",
         left: 0,
-        background: "#fafafa",
-        borderRight: "1px solid #e8e8e8",
+        background: isDark ? "#1a1a1a" : "#fafafa",
+        borderRight: `1px solid ${isDark ? '#333' : '#e8e8e8'}`,
         overflowY: "auto",
         paddingTop: "20px",
         boxSizing: "border-box",
@@ -103,8 +108,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             textDecoration: "none",
             fontSize: "14px",
             fontWeight: 500,
-            color: hoveredItem === "about" ? "#007272" : "#555",
-            background: hoveredItem === "about" ? "#fff" : "transparent",
+            color: hoveredItem === "about" ? "#007272" : (isDark ? "#999" : "#555"),
+            background: hoveredItem === "about" ? (isDark ? "#2a2a2a" : "#fff") : "transparent",
             transition: "all 0.15s ease",
           }}
         >
@@ -123,8 +128,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             textDecoration: "none",
             fontSize: "14px",
             fontWeight: 500,
-            color: hoveredItem === "getting-started" ? "#007272" : "#555",
-            background: hoveredItem === "getting-started" ? "#fff" : "transparent",
+            color: hoveredItem === "getting-started" ? "#007272" : (isDark ? "#999" : "#555"),
+            background: hoveredItem === "getting-started" ? (isDark ? "#2a2a2a" : "#fff") : "transparent",
             transition: "all 0.15s ease",
           }}
         >
@@ -134,7 +139,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </nav>
 
       {/* Divider */}
-      <div style={{ height: "1px", background: "#e8e8e8", margin: "12px 20px" }} />
+      <div style={{ height: "1px", background: isDark ? "#333" : "#e8e8e8", margin: "12px 20px" }} />
 
       {/* Platform selector dropdown */}
       <div style={{ padding: "8px 16px", position: "relative" }}>
@@ -146,13 +151,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             alignItems: "center",
             justifyContent: "space-between",
             padding: "10px 14px",
-            border: "1px solid #e0e0e0",
+            border: `1px solid ${isDark ? '#444' : '#e0e0e0'}`,
             borderRadius: "8px",
-            background: "#fff",
+            background: isDark ? "#2a2a2a" : "#fff",
             cursor: "pointer",
             fontSize: "14px",
             fontWeight: 500,
-            color: currentPlatform ? "#007272" : "#666",
+            color: currentPlatform ? "#007272" : (isDark ? "#999" : "#666"),
             boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
             transition: "all 0.2s ease",
           }}
@@ -161,7 +166,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           }}
           onMouseLeave={(e) => {
             if (!dropdownOpen) {
-              e.currentTarget.style.borderColor = "#e0e0e0";
+              e.currentTarget.style.borderColor = isDark ? '#444' : '#e0e0e0';
             }
           }}
         >
@@ -186,8 +191,8 @@ const Sidebar: React.FC<SidebarProps> = ({
               top: "calc(100% + 4px)",
               left: "16px",
               right: "16px",
-              background: "#fff",
-              border: "1px solid #e0e0e0",
+              background: isDark ? "#2a2a2a" : "#fff",
+              border: `1px solid ${isDark ? '#444' : '#e0e0e0'}`,
               borderRadius: "8px",
               boxShadow: "0 4px 16px rgba(0, 0, 0, 0.12)",
               zIndex: 10,
@@ -217,14 +222,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                   padding: "10px 14px",
                   border: "none",
                   background: currentPlatform === p
-                    ? "#e6f2f2"
+                    ? isDark ? "#1a3333" : "#e6f2f2"
                     : hoveredItem === `platform-${p}`
-                    ? "#f5f5f5"
-                    : "#fff",
+                    ? isDark ? "#333" : "#f5f5f5"
+                    : "transparent",
                   cursor: "pointer",
                   fontSize: "14px",
                   fontWeight: currentPlatform === p ? 500 : 400,
-                  color: currentPlatform === p ? "#007272" : "#333",
+                  color: currentPlatform === p ? "#007272" : (isDark ? "#ccc" : "#333"),
                   textAlign: "left",
                   transition: "all 0.15s ease",
                 }}
@@ -239,7 +244,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Platform-specific navigation */}
       {navItems.length > 0 && (
         <>
-          <div style={{ height: "1px", background: "#e8e8e8", margin: "12px 20px" }} />
+          <div style={{ height: "1px", background: isDark ? "#333" : "#e8e8e8", margin: "12px 20px" }} />
           <nav>
             {navItems.map((item) => {
               const isActive = currentPath === item.path;
@@ -256,12 +261,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                     padding: "10px 20px 10px 28px",
                     textDecoration: "none",
                     fontSize: "14px",
-                    color: isActive ? "#007272" : hoveredItem === item.path ? "#007272" : "#555",
+                    color: isActive ? "#007272" : hoveredItem === item.path ? "#007272" : (isDark ? "#999" : "#555"),
                     fontWeight: isActive ? 500 : 400,
                     background: isActive
-                      ? "linear-gradient(90deg, #e6f2f2, transparent)"
+                      ? isDark ? "linear-gradient(90deg, rgba(0, 122, 122, 0.2), transparent)" : "linear-gradient(90deg, #e6f2f2, transparent)"
                       : hoveredItem === item.path
-                      ? "#fff"
+                      ? isDark ? "#2a2a2a" : "#fff"
                       : "transparent",
                     borderLeft: isActive ? "3px solid #007272" : "3px solid transparent",
                     transition: "all 0.15s ease",

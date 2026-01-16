@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "gatsby";
 import SearchModal from "./SearchModal";
+import { useTheme } from "../context/ThemeContext";
 
 const Header: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchCompareMode, setSearchCompareMode] = useState(false);
   const [searchHovered, setSearchHovered] = useState(false);
   const [themeHovered, setThemeHovered] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === 'dark';
 
   // Listen for cmd+k / ctrl+k keyboard shortcut
   useEffect(() => {
@@ -40,8 +43,8 @@ const Header: React.FC = () => {
           justifyContent: "space-between",
           padding: "0 24px",
           height: "56px",
-          borderBottom: "1px solid #e8e8e8",
-          background: "rgba(255, 255, 255, 0.8)",
+          borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}`,
+          background: isDark ? "rgba(10, 10, 10, 0.8)" : "rgba(255, 255, 255, 0.8)",
           backdropFilter: "blur(12px)",
           position: "fixed",
           top: 0,
@@ -58,7 +61,7 @@ const Header: React.FC = () => {
             gap: "10px",
             fontSize: "15px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: isDark ? "#fff" : "#1a1a1a",
             textDecoration: "none",
             letterSpacing: "-0.2px",
           }}
@@ -94,12 +97,14 @@ const Header: React.FC = () => {
               alignItems: "center",
               gap: "8px",
               padding: "8px 14px",
-              border: "1px solid #e0e0e0",
+              border: `1px solid ${isDark ? '#555' : '#e0e0e0'}`,
               borderRadius: "8px",
-              background: searchHovered ? "#f5f5f5" : "#fff",
+              background: isDark
+                ? (searchHovered ? "#222" : "#1a1a1a")
+                : (searchHovered ? "#f5f5f5" : "#fff"),
               cursor: "pointer",
               fontSize: "13px",
-              color: "#666",
+              color: isDark ? "#999" : "#666",
               boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
               transition: "all 0.15s ease",
             }}
@@ -112,11 +117,11 @@ const Header: React.FC = () => {
             <kbd
               style={{
                 padding: "2px 6px",
-                background: "#f0f0f0",
+                background: isDark ? "#222" : "#f0f0f0",
                 borderRadius: "4px",
                 fontSize: "11px",
-                color: "#999",
-                border: "1px solid #e0e0e0",
+                color: isDark ? "#666" : "#999",
+                border: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
                 marginLeft: "4px",
               }}
             >
@@ -124,6 +129,7 @@ const Header: React.FC = () => {
             </kbd>
           </button>
           <button
+            onClick={toggleTheme}
             onMouseEnter={() => setThemeHovered(true)}
             onMouseLeave={() => setThemeHovered(false)}
             style={{
@@ -132,14 +138,17 @@ const Header: React.FC = () => {
               justifyContent: "center",
               width: "36px",
               height: "36px",
-              border: "1px solid #e0e0e0",
+              border: `1px solid ${isDark ? '#555' : '#e0e0e0'}`,
               borderRadius: "8px",
-              background: themeHovered ? "#f5f5f5" : "#fff",
+              background: isDark
+                ? (themeHovered ? "#222" : "#1a1a1a")
+                : (themeHovered ? "#f5f5f5" : "#fff"),
               cursor: "pointer",
-              color: "#666",
+              color: isDark ? "#999" : "#666",
               boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
               transition: "all 0.15s ease",
             }}
+            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           >
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
               <circle cx="10" cy="10" r="3" stroke="currentColor" strokeWidth="1.5"/>

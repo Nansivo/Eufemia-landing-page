@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "gatsby";
 import Layout from "../../components/Layout";
+import { useTheme } from "../../context/ThemeContext";
 
 const ArrowIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
@@ -65,6 +66,8 @@ const bestPractices = [
 
 const DesignPage: React.FC = () => {
   const [hoveredLibrary, setHoveredLibrary] = React.useState<string | null>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
     <Layout currentPath="/docs/design">
@@ -89,7 +92,7 @@ const DesignPage: React.FC = () => {
             style={{
               fontSize: "42px",
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: isDark ? "#fff" : "#1a1a1a",
               marginBottom: "16px",
               lineHeight: 1.2,
               letterSpacing: "-0.5px",
@@ -101,7 +104,7 @@ const DesignPage: React.FC = () => {
             style={{
               fontSize: "18px",
               lineHeight: 1.7,
-              color: "#555",
+              color: isDark ? "#999" : "#555",
               maxWidth: "700px",
             }}
           >
@@ -115,7 +118,7 @@ const DesignPage: React.FC = () => {
         <div
           style={{
             padding: "32px",
-            background: "#1a1a1a",
+            background: isDark ? "#1a1a1a" : "#1a1a1a",
             borderRadius: "16px",
             marginBottom: "48px",
           }}
@@ -169,7 +172,7 @@ const DesignPage: React.FC = () => {
         >
           Figma Libraries
         </h2>
-        <p style={{ fontSize: "16px", color: "#666", marginBottom: "24px" }}>
+        <p style={{ fontSize: "16px", color: isDark ? "#999" : "#666", marginBottom: "24px" }}>
           Enable these libraries in Figma to access all Eufemia components and styles.
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "48px" }}>
@@ -184,8 +187,8 @@ const DesignPage: React.FC = () => {
               style={{
                 display: "block",
                 padding: "20px",
-                background: "#fff",
-                border: "1px solid #e8e8e8",
+                background: isDark ? "#1a1a1a" : "#fff",
+                border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
                 borderRadius: "12px",
                 textDecoration: "none",
                 transform: hoveredLibrary === library.name ? "translateY(-2px)" : "translateY(0)",
@@ -196,14 +199,14 @@ const DesignPage: React.FC = () => {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-                <h3 style={{ fontSize: "15px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>
+                <h3 style={{ fontSize: "15px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", margin: 0 }}>
                   {library.name}
                 </h3>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ color: "#999" }}>
                   <path d="M4 12L12 4M12 4H6M12 4V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <p style={{ fontSize: "13px", color: "#666", margin: 0 }}>
+              <p style={{ fontSize: "13px", color: isDark ? "#999" : "#666", margin: 0 }}>
                 {library.description}
               </p>
             </a>
@@ -214,7 +217,7 @@ const DesignPage: React.FC = () => {
         <div
           style={{
             height: "1px",
-            background: "linear-gradient(90deg, transparent, #e0e0e0, transparent)",
+            background: `linear-gradient(90deg, transparent, ${isDark ? "#444" : "#e0e0e0"}, transparent)`,
             margin: "48px 0",
           }}
         />
@@ -239,7 +242,7 @@ const DesignPage: React.FC = () => {
                 display: "flex",
                 gap: "16px",
                 padding: "20px",
-                background: "#fafafa",
+                background: isDark ? "#222" : "#fafafa",
                 borderRadius: "12px",
               }}
             >
@@ -247,10 +250,10 @@ const DesignPage: React.FC = () => {
                 <CheckIcon />
               </div>
               <div>
-                <h3 style={{ fontSize: "15px", fontWeight: 600, color: "#1a1a1a", marginBottom: "4px" }}>
+                <h3 style={{ fontSize: "15px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "4px" }}>
                   {practice.title}
                 </h3>
-                <p style={{ fontSize: "14px", color: "#666", lineHeight: 1.5, margin: 0 }}>
+                <p style={{ fontSize: "14px", color: isDark ? "#999" : "#666", lineHeight: 1.5, margin: 0 }}>
                   {practice.description}
                 </p>
               </div>
