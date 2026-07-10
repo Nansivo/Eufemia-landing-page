@@ -242,7 +242,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
           transform: `translateX(-50%) ${isAnimating ? "translateY(0)" : "translateY(-10px)"}`,
           width: "100%",
           maxWidth: "600px",
-          background: isDark ? "#1a1a1a" : "#fff",
+          background: isDark ? "#1c1c1e" : "#fff",
           borderRadius: "12px",
           border: `1px solid ${isDark ? "#333" : "#e0e0e0"}`,
           boxShadow: "0 16px 48px rgba(0, 0, 0, 0.15)",
@@ -261,7 +261,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
               background: "#e6f2f2",
               borderBottom: "1px solid #d0e8e8",
               fontSize: "13px",
-              color: "#007272",
+              color: "#a5e1d2",
               fontWeight: 500,
             }}
           >
@@ -293,7 +293,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
               border: "none",
               outline: "none",
               fontSize: "16px",
-              color: isDark ? "#fff" : "#1a1a1a",
+              color: isDark ? "#fff" : "#1c1c1e",
               background: "transparent",
             }}
           />
@@ -412,7 +412,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
                 textAlign: "center",
               }}
             >
-              <div style={{ fontSize: "15px", fontWeight: 500, color: "#1a1a1a", marginBottom: "4px" }}>
+              <div style={{ fontSize: "15px", fontWeight: 500, color: "#1c1c1e", marginBottom: "4px" }}>
                 No results found
               </div>
               <div style={{ fontSize: "14px", color: "#888" }}>
@@ -480,7 +480,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
                             style={{
                               fontSize: "14px",
                               fontWeight: 500,
-                              color: isSelected ? "#007272" : "#1a1a1a",
+                              color: isSelected ? "#a5e1d2" : "#1c1c1e",
                               marginBottom: "2px",
                               display: "flex",
                               alignItems: "center",
@@ -495,7 +495,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
                                   fontWeight: 600,
                                   padding: "2px 6px",
                                   background: "#e6f2f2",
-                                  color: "#007272",
+                                  color: "#a5e1d2",
                                   borderRadius: "3px",
                                   whiteSpace: "nowrap",
                                 }}
@@ -547,7 +547,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
             alignItems: "center",
             justifyContent: "space-between",
             padding: "10px 16px",
-            background: isDark ? "#1a1a1a" : "#fafafa",
+            background: isDark ? "#1c1c1e" : "#fafafa",
             borderTop: `1px solid ${isDark ? "#333" : "#eee"}`,
             fontSize: "12px",
             color: isDark ? "#999" : "#888",
@@ -555,12 +555,12 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
         >
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              <kbd style={{ padding: "2px 5px", background: isDark ? "#1a1a1a" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↑</kbd>
-              <kbd style={{ padding: "2px 5px", background: isDark ? "#1a1a1a" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↓</kbd>
+              <kbd style={{ padding: "2px 5px", background: isDark ? "#1c1c1e" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↑</kbd>
+              <kbd style={{ padding: "2px 5px", background: isDark ? "#1c1c1e" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↓</kbd>
               Navigate
             </span>
             <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              <kbd style={{ padding: "2px 5px", background: isDark ? "#1a1a1a" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↵</kbd>
+              <kbd style={{ padding: "2px 5px", background: isDark ? "#1c1c1e" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↵</kbd>
               Open
             </span>
           </div>

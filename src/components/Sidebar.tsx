@@ -1,66 +1,89 @@
 import React, { useState } from "react";
 import { Link, navigate } from "gatsby";
 import { useTheme } from "../context/ThemeContext";
+import { radius, font } from "../theme/tokens";
+import { NAV_HEIGHT } from "./Header";
 
 type Platform = "web" | "ios" | "android" | null;
+
+type IconKind = "home" | "chevron" | "grid" | "arrow";
+
+interface NavItem {
+  label: string;
+  path: string;
+  icon: IconKind;
+  indent?: boolean;
+}
+
+// Web nav mirrors the Figma "About Eufemia" frame sidebar.
+const webNavItems: NavItem[] = [
+  { label: "Overview", path: "/docs/web", icon: "home" },
+  { label: "Usage", path: "/docs/web/usage", icon: "chevron", indent: true },
+  { label: "Typography", path: "/docs/web/typography", icon: "chevron", indent: true },
+  { label: "Helper Classes", path: "/docs/web/helper-classes", icon: "chevron", indent: true },
+  { label: "Patterns", path: "/docs/web/patterns", icon: "chevron", indent: true },
+  { label: "Development", path: "/docs/web/development", icon: "chevron", indent: true },
+  { label: "Performance", path: "/docs/web/performance", icon: "chevron", indent: true },
+  { label: "Components", path: "/docs/web/components", icon: "grid" },
+  { label: "Layout", path: "/docs/web/layout", icon: "grid" },
+  { label: "HTML Elements", path: "/docs/web/html-elements", icon: "grid" },
+  { label: "Extensions", path: "/docs/web/extensions", icon: "grid" },
+];
+
+const iosNavItems: NavItem[] = [
+  { label: "Overview", path: "/docs/ios", icon: "home" },
+  { label: "Components", path: "/docs/ios/components", icon: "grid" },
+  { label: "Design Tokens", path: "/docs/ios/design-tokens", icon: "grid" },
+];
+
+const androidNavItems: NavItem[] = [
+  { label: "Overview", path: "/docs/android", icon: "home" },
+  { label: "Components", path: "/docs/android/components", icon: "grid" },
+  { label: "Design Tokens", path: "/docs/android/design-tokens", icon: "grid" },
+];
+
+const Icon = ({ kind }: { kind: IconKind }) => {
+  const common = { width: 16, height: 16, viewBox: "0 0 16 16", fill: "none", style: { flexShrink: 0 } } as const;
+  switch (kind) {
+    case "home":
+      return (
+        <svg {...common}>
+          <path d="M2 6L8 1.5L14 6V13.5C14 14.05 13.55 14.5 13 14.5H3C2.45 14.5 2 14.05 2 13.5V6Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    case "arrow":
+      return (
+        <svg {...common}>
+          <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    case "grid":
+      return (
+        <svg {...common}>
+          <rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
+          <rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
+          <rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
+          <rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
+        </svg>
+      );
+    default:
+      return (
+        <svg {...common}>
+          <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+  }
+};
 
 interface SidebarProps {
   currentPlatform?: Platform;
   currentPath?: string;
 }
 
-const webNavItems = [
-  { label: "Overview", path: "/docs/web", isHome: true },
-  { label: "Usage", path: "/docs/web/usage" },
-  { label: "Typography", path: "/docs/web/typography" },
-  { label: "Helper Classes", path: "/docs/web/helper-classes" },
-  { label: "Patterns", path: "/docs/web/patterns" },
-  { label: "Development", path: "/docs/web/development" },
-  { label: "Performance", path: "/docs/web/performance" },
-];
-
-const iosNavItems = [
-  { label: "Overview", path: "/docs/ios", isHome: true },
-  { label: "Components", path: "/docs/ios/components" },
-  { label: "Design Tokens", path: "/docs/ios/design-tokens" },
-];
-
-const androidNavItems = [
-  { label: "Overview", path: "/docs/android", isHome: true },
-  { label: "Components", path: "/docs/android/components" },
-  { label: "Design Tokens", path: "/docs/android/design-tokens" },
-];
-
-const ChevronIcon = ({ rotated = false }: { rotated?: boolean }) => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
-    fill="none"
-    style={{
-      flexShrink: 0,
-      transform: rotated ? "rotate(90deg)" : "none",
-      transition: "transform 0.2s ease",
-    }}
-  >
-    <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const HomeIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-    <path d="M2 6L8 1.5L14 6V13.5C14 14.05 13.55 14.5 13 14.5H3C2.45 14.5 2 14.05 2 13.5V6Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const Sidebar: React.FC<SidebarProps> = ({
-  currentPlatform = null,
-  currentPath = "",
-}) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentPlatform = null, currentPath = "" }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
+  const [hovered, setHovered] = useState<string | null>(null);
+  const { colors } = useTheme();
 
   const navItems =
     currentPlatform === "web"
@@ -71,215 +94,180 @@ const Sidebar: React.FC<SidebarProps> = ({
       ? androidNavItems
       : [];
 
-  const platformLabels: Record<string, string> = {
-    web: "Web",
-    ios: "iOS",
-    android: "Android",
-  };
-
+  const platformLabels: Record<string, string> = { web: "Web", ios: "iOS", android: "Android" };
   const displayLabel = currentPlatform ? platformLabels[currentPlatform] : "Select platform";
+
+  // Figma uses colour-only selection (no pill): active = #e4eed7 + arrow icon,
+  // others = mint. Hover only nudges brightness.
+  const rowStyle = (active: boolean, hover: boolean, indent?: boolean): React.CSSProperties => ({
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    paddingLeft: indent ? "16px" : 0,
+    textDecoration: "none",
+    fontFamily: font.family,
+    fontSize: `${font.size.body}px`,
+    lineHeight: `${font.lineHeight.body}px`,
+    fontWeight: active ? 500 : 400,
+    color: active ? colors.textSelected : colors.accent,
+    opacity: hover && !active ? 0.8 : 1,
+    whiteSpace: "nowrap",
+    transition: "opacity 0.15s ease",
+  });
+
+  const renderRow = (item: NavItem) => {
+    const active = currentPath === item.path;
+    return (
+      <Link
+        key={item.path}
+        to={item.path}
+        onMouseEnter={() => setHovered(item.path)}
+        onMouseLeave={() => setHovered(null)}
+        style={rowStyle(active, hovered === item.path, item.indent)}
+      >
+        <Icon kind={active ? "arrow" : item.icon} />
+        {item.label}
+      </Link>
+    );
+  };
 
   return (
     <aside
       style={{
-        width: "248px",
-        height: "calc(100vh - 56px)",
+        width: "384px",
+        height: `calc(100vh - ${NAV_HEIGHT}px)`,
         position: "fixed",
-        top: "56px",
+        top: `${NAV_HEIGHT}px`,
         left: 0,
-        background: isDark ? "#1a1a1a" : "#fafafa",
-        borderRight: `1px solid ${isDark ? '#333' : '#e8e8e8'}`,
+        background: colors.pageBg,
+        borderRight: `1px solid ${colors.strokeSubtle}`, // the vertical divider @ x=384
         overflowY: "auto",
-        paddingTop: "20px",
+        padding: "55px 24px 40px",
         boxSizing: "border-box",
+        fontFamily: font.family,
       }}
     >
-      {/* Top navigation links */}
-      <nav style={{ marginBottom: "8px" }}>
-        <Link
-          to="/about"
-          onMouseEnter={() => setHoveredItem("about")}
-          onMouseLeave={() => setHoveredItem(null)}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            padding: "10px 20px",
-            textDecoration: "none",
-            fontSize: "14px",
-            fontWeight: 500,
-            color: hoveredItem === "about" ? "#007272" : (isDark ? "#999" : "#555"),
-            background: hoveredItem === "about" ? (isDark ? "#2a2a2a" : "#fff") : "transparent",
-            transition: "all 0.15s ease",
-          }}
-        >
-          <ChevronIcon />
-          About Eufemia
-        </Link>
-        <Link
-          to="/getting-started"
-          onMouseEnter={() => setHoveredItem("getting-started")}
-          onMouseLeave={() => setHoveredItem(null)}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            padding: "10px 20px",
-            textDecoration: "none",
-            fontSize: "14px",
-            fontWeight: 500,
-            color: hoveredItem === "getting-started" ? "#007272" : (isDark ? "#999" : "#555"),
-            background: hoveredItem === "getting-started" ? (isDark ? "#2a2a2a" : "#fff") : "transparent",
-            transition: "all 0.15s ease",
-          }}
-        >
-          <ChevronIcon />
-          Getting started
-        </Link>
-      </nav>
-
-      {/* Divider */}
-      <div style={{ height: "1px", background: isDark ? "#333" : "#e8e8e8", margin: "12px 20px" }} />
-
-      {/* Platform selector dropdown */}
-      <div style={{ padding: "8px 16px", position: "relative" }}>
-        <button
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "10px 14px",
-            border: `1px solid ${isDark ? '#444' : '#e0e0e0'}`,
-            borderRadius: "8px",
-            background: isDark ? "#2a2a2a" : "#fff",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: 500,
-            color: currentPlatform ? "#007272" : (isDark ? "#999" : "#666"),
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
-            transition: "all 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "#007272";
-          }}
-          onMouseLeave={(e) => {
-            if (!dropdownOpen) {
-              e.currentTarget.style.borderColor = isDark ? '#444' : '#e0e0e0';
-            }
-          }}
-        >
-          {displayLabel}
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            style={{
-              transform: dropdownOpen ? "rotate(180deg)" : "none",
-              transition: "transform 0.2s ease",
-            }}
-          >
-            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-        {dropdownOpen && (
-          <div
-            style={{
-              position: "absolute",
-              top: "calc(100% + 4px)",
-              left: "16px",
-              right: "16px",
-              background: isDark ? "#2a2a2a" : "#fff",
-              border: `1px solid ${isDark ? '#444' : '#e0e0e0'}`,
-              borderRadius: "8px",
-              boxShadow: "0 4px 16px rgba(0, 0, 0, 0.12)",
-              zIndex: 10,
-              overflow: "hidden",
-            }}
-          >
-            {(["web", "ios", "android"] as ("web" | "ios" | "android")[]).map((p) => (
-              <button
-                key={p}
-                onClick={() => {
-                  setDropdownOpen(false);
-                  if (p === "web") {
-                    // External link to existing Eufemia docs
-                    window.open("https://eufemia.dnb.no/uilib/", "_blank");
-                  } else {
-                    const platformPaths: Record<string, string> = {
-                      ios: "/docs/ios",
-                      android: "/docs/android",
-                    };
-                    navigate(platformPaths[p]);
-                  }
-                }}
-                onMouseEnter={() => setHoveredItem(`platform-${p}`)}
-                onMouseLeave={() => setHoveredItem(null)}
-                style={{
-                  width: "100%",
-                  padding: "10px 14px",
-                  border: "none",
-                  background: currentPlatform === p
-                    ? isDark ? "#1a3333" : "#e6f2f2"
-                    : hoveredItem === `platform-${p}`
-                    ? isDark ? "#333" : "#f5f5f5"
-                    : "transparent",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                  fontWeight: currentPlatform === p ? 500 : 400,
-                  color: currentPlatform === p ? "#007272" : (isDark ? "#ccc" : "#333"),
-                  textAlign: "left",
-                  transition: "all 0.15s ease",
-                }}
+      <div style={{ display: "flex", flexDirection: "column", gap: "27px", width: "336px" }}>
+        {/* Menu */}
+        <nav style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+          {(() => {
+            const active = currentPath === "/about";
+            return (
+              <Link
+                to="/about"
+                onMouseEnter={() => setHovered("about")}
+                onMouseLeave={() => setHovered(null)}
+                style={rowStyle(active, hovered === "about")}
               >
-                {platformLabels[p]}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+                <Icon kind={active ? "arrow" : "chevron"} />
+                About Eufemia
+              </Link>
+            );
+          })()}
+          {(() => {
+            const active = currentPath === "/getting-started";
+            return (
+              <Link
+                to="/getting-started"
+                onMouseEnter={() => setHovered("getting-started")}
+                onMouseLeave={() => setHovered(null)}
+                style={rowStyle(active, hovered === "getting-started")}
+              >
+                <Icon kind={active ? "arrow" : "chevron"} />
+                Getting started
+              </Link>
+            );
+          })()}
+        </nav>
 
-      {/* Platform-specific navigation */}
-      {navItems.length > 0 && (
-        <>
-          <div style={{ height: "1px", background: isDark ? "#333" : "#e8e8e8", margin: "12px 20px" }} />
-          <nav>
-            {navItems.map((item) => {
-              const isActive = currentPath === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onMouseEnter={() => setHoveredItem(item.path)}
-                  onMouseLeave={() => setHoveredItem(null)}
+        {/* Platform selector */}
+        <div style={{ position: "relative" }}>
+          <div style={{ fontSize: `${font.size.body}px`, lineHeight: `${font.lineHeight.body}px`, color: colors.text, marginBottom: "7px" }}>
+            Platform
+          </div>
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "4px 16px",
+              border: `1px solid ${colors.strokeAction}`,
+              borderRadius: `${radius.sm}px`,
+              background: colors.surface,
+              cursor: "pointer",
+              fontFamily: font.family,
+              fontSize: `${font.size.body}px`,
+              lineHeight: `${font.lineHeight.body}px`,
+              color: colors.accent,
+            }}
+          >
+            {displayLabel}
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ transform: dropdownOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s ease" }}>
+              <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          {dropdownOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "calc(100% + 4px)",
+                left: 0,
+                right: 0,
+                background: colors.surface,
+                border: `1px solid ${colors.strokeSubtle}`,
+                borderRadius: `${radius.md}px`,
+                boxShadow: "0 4px 16px rgba(0, 0, 0, 0.3)",
+                zIndex: 10,
+                overflow: "hidden",
+              }}
+            >
+              {(["web", "ios", "android"] as ("web" | "ios" | "android")[]).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    if (p === "web") window.open("https://eufemia.dnb.no/uilib/", "_blank");
+                    else navigate(p === "ios" ? "/docs/ios" : "/docs/android");
+                  }}
+                  onMouseEnter={() => setHovered(`platform-${p}`)}
+                  onMouseLeave={() => setHovered(null)}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    padding: "10px 20px 10px 28px",
-                    textDecoration: "none",
-                    fontSize: "14px",
-                    color: isActive ? "#007272" : hoveredItem === item.path ? "#007272" : (isDark ? "#999" : "#555"),
-                    fontWeight: isActive ? 500 : 400,
-                    background: isActive
-                      ? isDark ? "linear-gradient(90deg, rgba(0, 122, 122, 0.2), transparent)" : "linear-gradient(90deg, #e6f2f2, transparent)"
-                      : hoveredItem === item.path
-                      ? isDark ? "#2a2a2a" : "#fff"
-                      : "transparent",
-                    borderLeft: isActive ? "3px solid #007272" : "3px solid transparent",
-                    transition: "all 0.15s ease",
+                    width: "100%",
+                    padding: "8px 16px",
+                    border: "none",
+                    background: currentPlatform === p ? colors.selectedSubtle : hovered === `platform-${p}` ? colors.surfaceAlt : "transparent",
+                    cursor: "pointer",
+                    fontFamily: font.family,
+                    fontSize: `${font.size.body}px`,
+                    color: currentPlatform === p ? colors.textSelected : colors.accent,
+                    textAlign: "left",
                   }}
                 >
-                  {item.isHome ? <HomeIcon /> : <ChevronIcon />}
-                  {item.label}
-                </Link>
-              );
-            })}
+                  {platformLabels[p]}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Platform navigation */}
+        {navItems.length > 0 && (
+          <nav style={{ display: "flex", flexDirection: "column", gap: "32px", width: "142px" }}>
+            {/* Overview (home) */}
+            {renderRow(navItems[0])}
+            {/* Indented section */}
+            {navItems.some((i) => i.indent) && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "32px", paddingLeft: "16px" }}>
+                {navItems.filter((i) => i.indent).map((i) => renderRow({ ...i, indent: false }))}
+              </div>
+            )}
+            {/* Remaining top-level (grid) items */}
+            {navItems.slice(1).filter((i) => !i.indent).map((i) => renderRow(i))}
           </nav>
-        </>
-      )}
+        )}
+      </div>
     </aside>
   );
 };

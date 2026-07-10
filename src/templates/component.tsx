@@ -127,7 +127,7 @@ const renderBlock = (block: Block, index: number, isDark: boolean) => {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: isDark ? "#fff" : "#1a1a1a",
+            color: isDark ? "#fff" : "#1c1c1e",
             marginTop: "32px",
             marginBottom: "16px",
           }}
@@ -142,7 +142,7 @@ const renderBlock = (block: Block, index: number, isDark: boolean) => {
           style={{
             fontSize: "20px",
             fontWeight: 600,
-            color: isDark ? "#fff" : "#1a1a1a",
+            color: isDark ? "#fff" : "#1c1c1e",
             marginTop: "24px",
             marginBottom: "12px",
           }}
@@ -157,7 +157,7 @@ const renderBlock = (block: Block, index: number, isDark: boolean) => {
           style={{
             fontSize: "16px",
             fontWeight: 600,
-            color: isDark ? "#fff" : "#1a1a1a",
+            color: isDark ? "#fff" : "#1c1c1e",
             marginTop: "20px",
             marginBottom: "8px",
           }}
@@ -232,7 +232,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
 
   return (
     <Layout currentPlatform={component.platform as "ios" | "android"} currentPath={`${platformPath}/components`}>
-      <div style={{ padding: "48px 40px", maxWidth: "800px", background: isDark ? "#0a0a0a" : "#fff", color: isDark ? "#fff" : "#000", minHeight: "100vh" }}>
+      <div style={{ padding: "48px 40px", maxWidth: "800px", background: isDark ? "#000000" : "#fff", color: isDark ? "#fff" : "#000", minHeight: "100vh" }}>
         {/* Breadcrumb */}
         <div
           style={{
@@ -244,13 +244,13 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
             marginBottom: "24px",
           }}
         >
-          <Link to={platformPath} style={{ color: "#007272", textDecoration: "none" }}>
+          <Link to={platformPath} style={{ color: "#a5e1d2", textDecoration: "none" }}>
             {platformLabel}
           </Link>
           <span>/</span>
           <span>Components</span>
           <span>/</span>
-          <span style={{ color: isDark ? "#fff" : "#1a1a1a" }}>{component.name}</span>
+          <span style={{ color: isDark ? "#fff" : "#1c1c1e" }}>{component.name}</span>
         </div>
 
         {/* Header */}
@@ -273,7 +273,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
             style={{
               fontSize: "36px",
               fontWeight: 700,
-              color: isDark ? "#fff" : "#1a1a1a",
+              color: isDark ? "#fff" : "#1c1c1e",
               marginBottom: "12px",
               letterSpacing: "-0.5px",
             }}
@@ -352,12 +352,12 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
               alignItems: "center",
               gap: "8px",
               padding: "8px 14px",
-              background: isDark ? "#1a3333" : "#f0f7f7",
+              background: isDark ? "#0d4637" : "#f0f7f7",
               border: isDark ? "1px solid #1a5c5c" : "1px solid #b3dede",
               borderRadius: "6px",
               fontSize: "14px",
               fontWeight: 500,
-              color: isDark ? "#66c9c9" : "#007272",
+              color: isDark ? "#66c9c9" : "#a5e1d2",
               cursor: "pointer",
               textDecoration: "none",
               transition: "all 0.2s",
@@ -366,7 +366,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
               e.currentTarget.style.background = isDark ? "#1a4c4c" : "#e6f2f2";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = isDark ? "#1a3333" : "#f0f7f7";
+              e.currentTarget.style.background = isDark ? "#0d4637" : "#f0f7f7";
             }}
           >
             ↔ Compare
@@ -383,7 +383,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
                 alignItems: "center",
                 gap: "8px",
                 padding: "8px 14px",
-                background: isDark ? "#1a1a1a" : "#fff",
+                background: isDark ? "#1c1c1e" : "#fff",
                 border: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
                 borderRadius: "6px",
                 fontSize: "14px",
@@ -408,7 +408,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
                 alignItems: "center",
                 gap: "8px",
                 padding: "8px 14px",
-                background: isDark ? "#1a1a1a" : "#fff",
+                background: isDark ? "#1c1c1e" : "#fff",
                 border: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
                 borderRadius: "6px",
                 fontSize: "14px",
@@ -426,7 +426,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
         {/* Guidelines Section */}
         {component.guidelines && (
           <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
-            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "16px" }}>Guidelines</h2>
+            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1c1c1e", marginBottom: "16px" }}>Guidelines</h2>
             <p style={{ fontSize: "16px", lineHeight: 1.7, color: isDark ? "#ccc" : "#444", marginBottom: "16px", whiteSpace: "pre-wrap" }}>{component.guidelines}</p>
           </div>
         )}
@@ -434,7 +434,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
         {/* Usage Section */}
         {component.usage && (
           <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
-            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "16px" }}>Usage</h2>
+            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1c1c1e", marginBottom: "16px" }}>Usage</h2>
             <p style={{ fontSize: "16px", lineHeight: 1.7, color: isDark ? "#ccc" : "#444", marginBottom: "16px", whiteSpace: "pre-wrap" }}>{component.usage}</p>
           </div>
         )}
@@ -442,7 +442,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
         {/* Dos and Don'ts Section */}
         {component.dosAndDonts && (
           <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
-            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "16px" }}>Dos and Don'ts</h2>
+            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1c1c1e", marginBottom: "16px" }}>Dos and Don'ts</h2>
             <p style={{ fontSize: "16px", lineHeight: 1.7, color: isDark ? "#ccc" : "#444", marginBottom: "16px", whiteSpace: "pre-wrap" }}>{component.dosAndDonts}</p>
           </div>
         )}
@@ -450,7 +450,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
         {/* Accessibility Info Section */}
         {component.accessibilityInfo && (
           <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
-            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "16px" }}>Accessibility</h2>
+            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1c1c1e", marginBottom: "16px" }}>Accessibility</h2>
             <p style={{ fontSize: "16px", lineHeight: 1.7, color: isDark ? "#ccc" : "#444", marginBottom: "16px", whiteSpace: "pre-wrap" }}>{component.accessibilityInfo}</p>
           </div>
         )}
@@ -458,7 +458,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
         {/* Main Documentation content */}
         {component._rawDocumentation && component._rawDocumentation.length > 0 && (
           <div style={{ marginBottom: "40px", paddingBottom: "32px", borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}` }}>
-            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "16px" }}>Documentation</h2>
+            <h2 style={{ fontSize: "24px", fontWeight: 600, color: isDark ? "#fff" : "#1c1c1e", marginBottom: "16px" }}>Documentation</h2>
             <div>{component._rawDocumentation.map((block, i) => renderBlock(block, i, isDark))}</div>
           </div>
         )}
@@ -472,7 +472,7 @@ const ComponentTemplate: React.FC<Props> = ({ data }) => {
               alignItems: "center",
               gap: "6px",
               fontSize: "14px",
-              color: "#007272",
+              color: "#a5e1d2",
               textDecoration: "none",
             }}
           >

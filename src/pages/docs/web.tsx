@@ -111,7 +111,7 @@ const WebPage: React.FC = () => {
               borderRadius: "20px",
               fontSize: "13px",
               fontWeight: 500,
-              color: "#007272",
+              color: "#a5e1d2",
               marginBottom: "16px",
             }}
           >
@@ -125,7 +125,7 @@ const WebPage: React.FC = () => {
             style={{
               fontSize: "42px",
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: "#1c1c1e",
               marginBottom: "16px",
               lineHeight: 1.2,
               letterSpacing: "-0.5px",
@@ -154,7 +154,7 @@ const WebPage: React.FC = () => {
                 alignItems: "center",
                 gap: "6px",
                 padding: "10px 18px",
-                background: "#007272",
+                background: "#a5e1d2",
                 borderRadius: "8px",
                 fontSize: "14px",
                 fontWeight: 500,
@@ -166,7 +166,7 @@ const WebPage: React.FC = () => {
                 e.currentTarget.style.background = "#005f5f";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#007272";
+                e.currentTarget.style.background = "#a5e1d2";
               }}
             >
               Start designing
@@ -188,8 +188,8 @@ const WebPage: React.FC = () => {
                 transition: "all 0.2s ease",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#007272";
-                e.currentTarget.style.color = "#007272";
+                e.currentTarget.style.borderColor = "#a5e1d2";
+                e.currentTarget.style.color = "#a5e1d2";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = "#e0e0e0";
@@ -233,7 +233,7 @@ const WebPage: React.FC = () => {
               outline: "none",
             }}
             onFocus={(e) => {
-              e.currentTarget.style.borderColor = "#007272";
+              e.currentTarget.style.borderColor = "#a5e1d2";
               e.currentTarget.style.background = "#fff";
             }}
             onBlur={(e) => {
@@ -277,7 +277,7 @@ const WebPage: React.FC = () => {
                 style={{
                   height: "120px",
                   background: hoveredCard === component.name
-                    ? "linear-gradient(135deg, #007272 0%, #009999 100%)"
+                    ? "linear-gradient(135deg, #a5e1d2 0%, #a5e1d2 100%)"
                     : "linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%)",
                   display: "flex",
                   alignItems: "center",
@@ -293,7 +293,7 @@ const WebPage: React.FC = () => {
                   style={{
                     fontSize: "16px",
                     fontWeight: 600,
-                    color: "#1a1a1a",
+                    color: "#1c1c1e",
                     marginBottom: "8px",
                   }}
                 >
@@ -332,7 +332,7 @@ const WebPage: React.FC = () => {
             background: "#fff",
             border: "1px solid #e0e0e0",
             borderRadius: "8px",
-            color: "#007272",
+            color: "#a5e1d2",
             fontSize: "14px",
             fontWeight: 500,
             cursor: "pointer",

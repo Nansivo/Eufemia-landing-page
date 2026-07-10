@@ -95,7 +95,7 @@ const AndroidPage: React.FC = () => {
             style={{
               fontSize: "42px",
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: "#1c1c1e",
               marginBottom: "16px",
               lineHeight: 1.2,
               letterSpacing: "-0.5px",
@@ -124,7 +124,7 @@ const AndroidPage: React.FC = () => {
                 alignItems: "center",
                 gap: "6px",
                 padding: "10px 18px",
-                background: "#007272",
+                background: "#a5e1d2",
                 borderRadius: "8px",
                 fontSize: "14px",
                 fontWeight: 500,
@@ -186,7 +186,7 @@ const AndroidPage: React.FC = () => {
               outline: "none",
             }}
             onFocus={(e) => {
-              e.currentTarget.style.borderColor = "#007272";
+              e.currentTarget.style.borderColor = "#a5e1d2";
               e.currentTarget.style.background = "#fff";
             }}
             onBlur={(e) => {
@@ -251,7 +251,7 @@ const AndroidPage: React.FC = () => {
                   style={{
                     height: "120px",
                     background: hoveredCard === component.id
-                      ? "#007272"
+                      ? "#a5e1d2"
                       : "#f8f8f8",
                     display: "flex",
                     alignItems: "center",
@@ -267,7 +267,7 @@ const AndroidPage: React.FC = () => {
                     style={{
                       fontSize: "16px",
                       fontWeight: 600,
-                      color: "#1a1a1a",
+                      color: "#1c1c1e",
                       marginBottom: "8px",
                     }}
                   >
@@ -320,7 +320,7 @@ const AndroidPage: React.FC = () => {
             background: "#fff",
             border: "1px solid #e0e0e0",
             borderRadius: "8px",
-            color: "#007272",
+            color: "#a5e1d2",
             fontSize: "14px",
             fontWeight: 500,
             cursor: "pointer",

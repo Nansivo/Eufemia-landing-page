@@ -48,11 +48,11 @@ const DesignTokensPage: React.FC<PageProps> = ({ pageContext }) => {
             marginBottom: '24px',
           }}
         >
-          <Link to={platformPath} style={{ color: '#007272', textDecoration: 'none' }}>
+          <Link to={platformPath} style={{ color: '#a5e1d2', textDecoration: 'none' }}>
             {platformLabel}
           </Link>
           <span>/</span>
-          <span style={{ color: '#1a1a1a' }}>Design Tokens</span>
+          <span style={{ color: '#1c1c1e' }}>Design Tokens</span>
         </div>
 
         {/* Header */}
@@ -61,7 +61,7 @@ const DesignTokensPage: React.FC<PageProps> = ({ pageContext }) => {
             style={{
               fontSize: '36px',
               fontWeight: 700,
-              color: '#1a1a1a',
+              color: '#1c1c1e',
               marginBottom: '12px',
               letterSpacing: '-0.5px',
             }}
@@ -114,7 +114,7 @@ const DesignTokensPage: React.FC<PageProps> = ({ pageContext }) => {
               alignItems: 'center',
               gap: '6px',
               fontSize: '14px',
-              color: '#007272',
+              color: '#a5e1d2',
               textDecoration: 'none',
             }}
           >

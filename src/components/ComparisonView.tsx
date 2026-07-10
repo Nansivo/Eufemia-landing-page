@@ -197,7 +197,7 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
             </div>
           )}
         </div>
-        <h2 style={{ fontSize: "24px", fontWeight: 700, color: isDark ? "#fff" : "#1a1a1a", margin: "0 0 12px 0" }}>
+        <h2 style={{ fontSize: "24px", fontWeight: 700, color: isDark ? "#fff" : "#1c1c1e", margin: "0 0 12px 0" }}>
           {component.name}
         </h2>
         {component.shortDescription && (
@@ -264,7 +264,7 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
                 alignItems: "center",
                 gap: "6px",
                 padding: "6px 12px",
-                background: isDark ? "#1a1a1a" : "#fff",
+                background: isDark ? "#1c1c1e" : "#fff",
                 border: `1px solid ${isDark ? "#333" : "#e0e0e0"}`,
                 borderRadius: "6px",
                 fontSize: "13px",
@@ -274,8 +274,8 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
                 transition: "all 0.2s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#007272";
-                e.currentTarget.style.color = "#007272";
+                e.currentTarget.style.borderColor = "#a5e1d2";
+                e.currentTarget.style.color = "#a5e1d2";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = "#e0e0e0";
@@ -296,7 +296,7 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
                 alignItems: "center",
                 gap: "6px",
                 padding: "6px 12px",
-                background: isDark ? "#1a1a1a" : "#fff",
+                background: isDark ? "#1c1c1e" : "#fff",
                 border: `1px solid ${isDark ? "#333" : "#e0e0e0"}`,
                 borderRadius: "6px",
                 fontSize: "13px",
@@ -306,8 +306,8 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
                 transition: "all 0.2s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#007272";
-                e.currentTarget.style.color = "#007272";
+                e.currentTarget.style.borderColor = "#a5e1d2";
+                e.currentTarget.style.color = "#a5e1d2";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = "#e0e0e0";
@@ -324,7 +324,7 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
       {/* Guidelines */}
       {component.guidelines && (
         <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: `1px solid ${isDark ? "#333" : "#e8e8e8"}` }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1a1a1a" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1c1c1e" }}>
             Guidelines
           </h3>
           <p style={{ fontSize: "14px", lineHeight: 1.6, color: isDark ? "#999" : "#555", margin: 0 }}>
@@ -336,7 +336,7 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
       {/* Usage */}
       {component.usage && (
         <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: `1px solid ${isDark ? "#333" : "#e8e8e8"}` }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1a1a1a" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1c1c1e" }}>
             Usage
           </h3>
           <p style={{ fontSize: "14px", lineHeight: 1.6, color: isDark ? "#999" : "#555", whiteSpace: "pre-wrap", margin: 0 }}>
@@ -348,7 +348,7 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
       {/* Do's and Don'ts */}
       {component.dosAndDonts && (
         <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: `1px solid ${isDark ? "#333" : "#e8e8e8"}` }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1a1a1a" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1c1c1e" }}>
             Do's and Don'ts
           </h3>
           <p style={{ fontSize: "14px", lineHeight: 1.6, color: isDark ? "#999" : "#555", whiteSpace: "pre-wrap", margin: 0 }}>
@@ -360,7 +360,7 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
       {/* Accessibility */}
       {component.accessibilityInfo && (
         <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: `1px solid ${isDark ? "#333" : "#e8e8e8"}` }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1a1a1a" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1c1c1e" }}>
             Accessibility
           </h3>
           <p style={{ fontSize: "14px", lineHeight: 1.6, color: isDark ? "#999" : "#555", whiteSpace: "pre-wrap", margin: 0 }}>
@@ -372,7 +372,7 @@ const ComponentCard: React.FC<{ component: ComponentData; isDark: boolean }> = (
       {/* Documentation */}
       {component._rawDocumentation && component._rawDocumentation.length > 0 && (
         <div>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1a1a1a" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, marginTop: 0, marginBottom: "12px", color: isDark ? "#fff" : "#1c1c1e" }}>
             Documentation
           </h3>
           {component._rawDocumentation.map((block, i) => renderBlock(block, i, isDark))}

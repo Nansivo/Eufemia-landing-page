@@ -147,9 +147,9 @@ export const TokensViewer: React.FC<TokensViewerProps> = ({ tokens }) => {
                     border: 'none',
                     fontSize: '14px',
                     fontWeight: selectedCollection === collection ? 600 : 400,
-                    color: selectedCollection === collection ? '#007272' : isDark ? "#999" : "#666",
+                    color: selectedCollection === collection ? '#a5e1d2' : isDark ? "#999" : "#666",
                     cursor: 'pointer',
-                    borderBottom: selectedCollection === collection ? '3px solid #007272' : 'none',
+                    borderBottom: selectedCollection === collection ? '3px solid #a5e1d2' : 'none',
                     transition: 'all 0.2s',
                   }}
                 >
@@ -176,7 +176,7 @@ export const TokensViewer: React.FC<TokensViewerProps> = ({ tokens }) => {
                 style={{
                   fontSize: '18px',
                   fontWeight: 600,
-                  color: '#1a1a1a',
+                  color: '#1c1c1e',
                   marginBottom: '16px',
                   marginTop: 0,
                 }}
@@ -198,7 +198,7 @@ export const TokensViewer: React.FC<TokensViewerProps> = ({ tokens }) => {
                     width: '100%',
                     borderCollapse: 'collapse',
                     fontSize: '13px',
-                    backgroundColor: isDark ? "#1a1a1a" : "#fff",
+                    backgroundColor: isDark ? "#1c1c1e" : "#fff",
                   }}
                 >
                   {/* Table Header */}
@@ -209,7 +209,7 @@ export const TokensViewer: React.FC<TokensViewerProps> = ({ tokens }) => {
                           padding: '12px',
                           textAlign: 'left',
                           fontWeight: 600,
-                          color: isDark ? "#fff" : "#1a1a1a",
+                          color: isDark ? "#fff" : "#1c1c1e",
                           minWidth: '200px',
                           position: 'sticky',
                           left: 0,
@@ -226,7 +226,7 @@ export const TokensViewer: React.FC<TokensViewerProps> = ({ tokens }) => {
                             padding: '12px',
                             textAlign: 'center',
                             fontWeight: 600,
-                            color: isDark ? "#fff" : "#1a1a1a",
+                            color: isDark ? "#fff" : "#1c1c1e",
                             minWidth: '120px',
                             borderLeft: `1px solid ${isDark ? "#444" : "#e0e0e0"}`,
                             whiteSpace: 'nowrap',
@@ -250,7 +250,7 @@ export const TokensViewer: React.FC<TokensViewerProps> = ({ tokens }) => {
                           key={token.id}
                           style={{
                             borderBottom: `1px solid ${isDark ? "#444" : "#e8e8e8"}`,
-                            backgroundColor: idx % 2 === 0 ? (isDark ? "#1a1a1a" : "#fff") : (isDark ? "#222" : "#f9f9f9"),
+                            backgroundColor: idx % 2 === 0 ? (isDark ? "#1c1c1e" : "#fff") : (isDark ? "#222" : "#f9f9f9"),
                           }}
                         >
                           {/* Token Name Column */}
@@ -258,10 +258,10 @@ export const TokensViewer: React.FC<TokensViewerProps> = ({ tokens }) => {
                             style={{
                               padding: '12px',
                               fontWeight: 500,
-                              color: isDark ? "#007272" : "#007272",
+                              color: isDark ? "#a5e1d2" : "#a5e1d2",
                               position: 'sticky',
                               left: 0,
-                              backgroundColor: idx % 2 === 0 ? (isDark ? "#1a1a1a" : "#fff") : (isDark ? "#222" : "#f9f9f9"),
+                              backgroundColor: idx % 2 === 0 ? (isDark ? "#1c1c1e" : "#fff") : (isDark ? "#222" : "#f9f9f9"),
                               zIndex: 5,
                             }}
                           >
@@ -351,7 +351,7 @@ export const TokensViewer: React.FC<TokensViewerProps> = ({ tokens }) => {
                                           top: '-28px',
                                           left: '50%',
                                           transform: 'translateX(-50%)',
-                                          background: '#007272',
+                                          background: '#a5e1d2',
                                           color: '#fff',
                                           padding: '4px 8px',
                                           borderRadius: '4px',

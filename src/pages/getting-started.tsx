@@ -20,7 +20,7 @@ const paths = [
       </svg>
     ),
     link: "/docs/design",
-    color: "#007272",
+    color: "#a5e1d2",
   },
   {
     title: "For Developers",
@@ -32,7 +32,7 @@ const paths = [
       </svg>
     ),
     link: "/docs/web/getting-started/develop",
-    color: "#1a1a1a",
+    color: "#1c1c1e",
   },
 ];
 
@@ -99,7 +99,7 @@ const GettingStartedPage: React.FC = () => {
               borderRadius: "20px",
               fontSize: "13px",
               fontWeight: 500,
-              color: "#007272",
+              color: "#a5e1d2",
               marginBottom: "16px",
             }}
           >
@@ -109,7 +109,7 @@ const GettingStartedPage: React.FC = () => {
             style={{
               fontSize: "42px",
               fontWeight: 700,
-              color: isDark ? "#fff" : "#1a1a1a",
+              color: isDark ? "#fff" : "#1c1c1e",
               marginBottom: "16px",
               lineHeight: 1.2,
               letterSpacing: "-0.5px",
@@ -217,7 +217,7 @@ const GettingStartedPage: React.FC = () => {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: "#1c1c1e",
             marginBottom: "16px",
             letterSpacing: "-0.3px",
           }}
@@ -235,14 +235,14 @@ const GettingStartedPage: React.FC = () => {
               style={{
                 display: "block",
                 padding: "24px",
-                background: isDark ? "#1a1a1a" : "#fff",
+                background: isDark ? "#1c1c1e" : "#fff",
                 border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
                 borderRadius: "12px",
                 textDecoration: "none",
                 transition: "all 0.2s ease",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#007272";
+                e.currentTarget.style.borderColor = "#a5e1d2";
                 e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)";
               }}
               onMouseLeave={(e) => {
@@ -251,7 +251,7 @@ const GettingStartedPage: React.FC = () => {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                <h3 style={{ fontSize: "16px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>
+                <h3 style={{ fontSize: "16px", fontWeight: 600, color: "#1c1c1e", margin: 0 }}>
                   {platform.name}
                 </h3>
                 <span
@@ -261,7 +261,7 @@ const GettingStartedPage: React.FC = () => {
                     borderRadius: "4px",
                     fontSize: "11px",
                     fontWeight: 500,
-                    color: platform.status === "Stable" ? "#007272" : "#cc7a00",
+                    color: platform.status === "Stable" ? "#a5e1d2" : "#cc7a00",
                   }}
                 >
                   {platform.status}
@@ -288,7 +288,7 @@ const GettingStartedPage: React.FC = () => {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: "#1c1c1e",
             marginBottom: "24px",
             letterSpacing: "-0.3px",
           }}
@@ -307,7 +307,7 @@ const GettingStartedPage: React.FC = () => {
                 alignItems: "center",
                 justifyContent: "space-between",
                 padding: "20px",
-                background: hoveredResource === resource.title ? isDark ? "#222" : "#fafafa" : isDark ? "#1a1a1a" : "#fff",
+                background: hoveredResource === resource.title ? isDark ? "#222" : "#fafafa" : isDark ? "#1c1c1e" : "#fff",
                 border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
                 borderRadius: "8px",
                 textDecoration: "none",
@@ -315,14 +315,14 @@ const GettingStartedPage: React.FC = () => {
               }}
             >
               <div>
-                <h3 style={{ fontSize: "15px", fontWeight: 600, color: "#007272", marginBottom: "4px" }}>
+                <h3 style={{ fontSize: "15px", fontWeight: 600, color: "#a5e1d2", marginBottom: "4px" }}>
                   {resource.title}
                 </h3>
                 <p style={{ fontSize: "13px", color: isDark ? "#999" : "#666", margin: 0 }}>
                   {resource.description}
                 </p>
               </div>
-              <div style={{ color: "#007272" }}>
+              <div style={{ color: "#a5e1d2" }}>
                 <ArrowIcon />
               </div>
             </Link>

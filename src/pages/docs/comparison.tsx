@@ -164,7 +164,7 @@ const ComparisonPage: React.FC = () => {
             onClick={() => navigate(-1)}
             style={{
               padding: "8px 14px",
-              background: "#007272",
+              background: "#a5e1d2",
               color: "#fff",
               border: "none",
               borderRadius: "6px",
@@ -193,7 +193,7 @@ const ComparisonPage: React.FC = () => {
               marginBottom: "16px",
             }}
           >
-            <h1 style={{ margin: 0, fontSize: "28px", fontWeight: 700, color: "#1a1a1a" }}>
+            <h1 style={{ margin: 0, fontSize: "28px", fontWeight: 700, color: "#1c1c1e" }}>
               {first.name} vs {second.name}
             </h1>
             <button

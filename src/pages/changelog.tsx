@@ -70,7 +70,7 @@ const changelog = [
 const getTypeStyles = (type: string) => {
   switch (type) {
     case "feature":
-      return { background: "#e6f2f2", color: "#007272", label: "New" };
+      return { background: "#e6f2f2", color: "#a5e1d2", label: "New" };
     case "improvement":
       return { background: "#e6f0ff", color: "#0055cc", label: "Improved" };
     case "fix":
@@ -98,7 +98,7 @@ const ChangelogPage: React.FC = () => {
               borderRadius: "20px",
               fontSize: "13px",
               fontWeight: 500,
-              color: "#007272",
+              color: "#a5e1d2",
               marginBottom: "16px",
             }}
           >
@@ -108,7 +108,7 @@ const ChangelogPage: React.FC = () => {
             style={{
               fontSize: "42px",
               fontWeight: 700,
-              color: isDark ? "#fff" : "#1a1a1a",
+              color: isDark ? "#fff" : "#1c1c1e",
               marginBottom: "16px",
               lineHeight: 1.2,
               letterSpacing: "-0.5px",
@@ -137,13 +137,13 @@ const ChangelogPage: React.FC = () => {
               id={release.version.replace(/\./g, "-")}
               style={{
                 padding: "28px",
-                background: isDark ? "#1a1a1a" : "#fff",
+                background: isDark ? "#1c1c1e" : "#fff",
                 border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
                 borderRadius: "16px",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-                <h2 style={{ fontSize: "22px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", margin: 0 }}>
+                <h2 style={{ fontSize: "22px", fontWeight: 600, color: isDark ? "#fff" : "#1c1c1e", margin: 0 }}>
                   v{release.version}
                 </h2>
                 <span
@@ -203,7 +203,7 @@ const ChangelogPage: React.FC = () => {
           style={{
             marginTop: "48px",
             padding: "24px",
-            background: isDark ? "#1a1a1a" : "#fafafa",
+            background: isDark ? "#1c1c1e" : "#fafafa",
             borderRadius: "12px",
             textAlign: "center",
           }}
@@ -214,7 +214,7 @@ const ChangelogPage: React.FC = () => {
               href="https://github.com/dnbexperience/eufemia/releases"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#007272", textDecoration: "underline" }}
+              style={{ color: "#a5e1d2", textDecoration: "underline" }}
             >
               GitHub releases page
             </a>

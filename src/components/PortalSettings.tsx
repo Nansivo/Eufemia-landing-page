@@ -1,0 +1,335 @@
+import React, { useEffect } from "react";
+import { useTheme } from "../context/ThemeContext";
+import { radius, font, shadow } from "../theme/tokens";
+import { NAV_HEIGHT } from "./Header";
+
+interface PortalSettingsProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const CloseIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M3.5 3.5L12.5 12.5M12.5 3.5L3.5 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+const CheckIcon = ({ color }: { color: string }) => (
+  <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+    <path d="M2.5 6.5L5 9L9.5 3.5" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const PortalSettings: React.FC<PortalSettingsProps> = ({ isOpen, onClose }) => {
+  const { colors, mode, setMode } = useTheme();
+
+  const [brand, setBrand] = React.useState("DNB");
+  const [language, setLanguage] = React.useState("Norsk");
+  const [platforms, setPlatforms] = React.useState<Record<string, boolean>>({
+    Web: false,
+    iOS: true,
+    Android: true,
+  });
+  const [skeletons, setSkeletons] = React.useState(true);
+  const [showGrid, setShowGrid] = React.useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  // --- Reusable pieces ------------------------------------------------------
+
+  const ToggleButton: React.FC<{
+    label: string;
+    selected: boolean;
+    onClick: () => void;
+    checkbox?: boolean;
+  }> = ({ label, selected, onClick, checkbox }) => (
+    <button
+      onClick={onClick}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: checkbox ? "8px" : 0,
+        padding: checkbox ? "8px 24px 8px 16px" : "8px 24px",
+        borderRadius: `${radius.md}px`,
+        border: selected
+          ? `2px solid ${colors.buttonStrokeSelected}`
+          : `1px solid ${colors.stroke}`,
+        background: selected ? colors.selectedSubtle : colors.surface,
+        color: selected ? colors.textSelected : colors.text,
+        cursor: "pointer",
+        fontFamily: font.family,
+        fontSize: `${font.size.body}px`,
+        lineHeight: `${font.lineHeight.body}px`,
+        whiteSpace: "nowrap",
+      }}
+    >
+      {checkbox && (
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "16px",
+            height: "16px",
+            borderRadius: `${radius.sm}px`,
+            background: selected ? colors.selected : colors.surface,
+            border: selected ? "none" : `1px solid ${colors.strokeActionAlt}`,
+          }}
+        >
+          {selected && <CheckIcon color={colors.selectedSubtle} />}
+        </span>
+      )}
+      {label}
+    </button>
+  );
+
+  const Switch: React.FC<{ on: boolean; onClick: () => void }> = ({ on, onClick }) => (
+    <button
+      onClick={onClick}
+      role="switch"
+      aria-checked={on}
+      style={{
+        position: "relative",
+        width: "40px",
+        height: "24px",
+        flexShrink: 0,
+        borderRadius: `${radius.xl}px`,
+        border: on ? "none" : `1px solid ${colors.strokeActionAlt}`,
+        background: on ? colors.selected : colors.surface,
+        cursor: "pointer",
+        padding: 0,
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: "50%",
+          transform: "translateY(-50%)",
+          left: on ? "auto" : "5px",
+          right: on ? "3px" : "auto",
+          width: on ? "18px" : "12px",
+          height: on ? "18px" : "12px",
+          borderRadius: `${radius.xl}px`,
+          background: on ? colors.selectedSubtle : colors.actionAlt,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {on && <CheckIcon color={colors.selected} />}
+      </span>
+    </button>
+  );
+
+  const sectionLabel: React.CSSProperties = {
+    fontFamily: font.family,
+    fontSize: `${font.size.bodyMedium}px`,
+    fontWeight: 500,
+    lineHeight: `${font.lineHeight.body}px`,
+    color: colors.text,
+  };
+
+  const helpText = (linkLabel: string, href: string) => (
+    <span
+      style={{
+        fontFamily: font.family,
+        fontSize: `${font.size.small}px`,
+        lineHeight: `${font.lineHeight.small}px`,
+        color: colors.textMuted,
+      }}
+    >
+      Read more about{" "}
+      <a href={href} target="_blank" rel="noreferrer" style={{ color: colors.accent, textDecoration: "underline" }}>
+        {linkLabel}
+      </a>
+      .
+    </span>
+  );
+
+  const chipRow: React.CSSProperties = {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "8px 16px",
+    alignItems: "flex-start",
+    width: "100%",
+  };
+
+  const labelBlock = (title: string, help?: React.ReactNode) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <span style={sectionLabel}>{title}</span>
+      {help}
+    </div>
+  );
+
+  const section: React.CSSProperties = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+    width: "100%",
+  };
+
+  const brands = ["DNB", "Sbanken (WIP)", "DNB Eiendom", "DNB Carnegie (WIP)"];
+  const languages = ["Norsk", "Svenska", "Dansk", "English (GB)"];
+  const themeModes: Array<{ label: string; value: "auto" | "light" | "dark" }> = [
+    { label: "Auto", value: "auto" },
+    { label: "Light", value: "light" },
+    { label: "Dark", value: "dark" },
+  ];
+
+  return (
+    <>
+      {/* Click-away backdrop */}
+      <div
+        onClick={onClose}
+        style={{ position: "fixed", inset: 0, zIndex: 200, background: "transparent" }}
+      />
+      <div
+        role="dialog"
+        aria-label="Portal settings"
+        style={{
+          position: "fixed",
+          top: `${NAV_HEIGHT + 8}px`,
+          right: "24px",
+          zIndex: 201,
+          width: "434px",
+          maxWidth: "560px",
+          minWidth: "340px",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          gap: "32px",
+          padding: "40px",
+          borderRadius: `${radius.xl}px`,
+          background: colors.surface,
+          border: `1px solid ${colors.strokeSubtle}`,
+          boxShadow: shadow.standard,
+          maxHeight: `calc(100vh - ${NAV_HEIGHT + 32}px)`,
+          overflowY: "auto",
+        }}
+      >
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span
+            style={{
+              fontFamily: font.family,
+              fontSize: `${font.size.lead}px`,
+              fontWeight: 500,
+              lineHeight: `${font.lineHeight.lead}px`,
+              color: colors.text,
+            }}
+          >
+            Portal settings
+          </span>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            style={{ background: "none", border: "none", cursor: "pointer", color: colors.text, display: "flex" }}
+          >
+            <CloseIcon />
+          </button>
+        </div>
+
+        {/* Brand */}
+        <div style={section}>
+          {labelBlock("Brand", helpText("theming", "https://eufemia.dnb.no/uilib/usage/customisation/theming/"))}
+          <div style={chipRow}>
+            {brands.map((b) => (
+              <ToggleButton key={b} label={b} selected={brand === b} onClick={() => setBrand(b)} />
+            ))}
+          </div>
+        </div>
+
+        {/* Component language */}
+        <div style={section}>
+          {labelBlock("Component language", helpText("localization", "https://eufemia.dnb.no/uilib/usage/customisation/localization/"))}
+          <div style={chipRow}>
+            {languages.map((l) => (
+              <ToggleButton key={l} label={l} selected={language === l} onClick={() => setLanguage(l)} />
+            ))}
+          </div>
+        </div>
+
+        {/* Theming — wired to ThemeContext */}
+        <div style={section}>
+          {labelBlock("Theming", helpText("theming", "https://eufemia.dnb.no/uilib/usage/customisation/theming/"))}
+          <div style={chipRow}>
+            {themeModes.map((t) => (
+              <ToggleButton key={t.value} label={t.label} selected={mode === t.value} onClick={() => setMode(t.value)} />
+            ))}
+          </div>
+        </div>
+
+        {/* Preferred platform(s) */}
+        <div style={section}>
+          {labelBlock(
+            "Preferred platform(s)",
+            <span
+              style={{
+                fontFamily: font.family,
+                fontSize: `${font.size.small}px`,
+                lineHeight: `${font.lineHeight.small}px`,
+                color: colors.textMuted,
+              }}
+            >
+              This will filter search results based on your selection,
+            </span>
+          )}
+          <div style={chipRow}>
+            {["Web", "iOS", "Android"].map((p) => (
+              <ToggleButton
+                key={p}
+                label={p}
+                checkbox
+                selected={platforms[p]}
+                onClick={() => setPlatforms((s) => ({ ...s, [p]: !s[p] }))}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Other */}
+        <div style={section}>
+          <span style={sectionLabel}>Other</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Switch on={skeletons} onClick={() => setSkeletons((v) => !v)} />
+              <span
+                style={{
+                  fontFamily: font.family,
+                  fontSize: `${font.size.body}px`,
+                  lineHeight: `${font.lineHeight.body}px`,
+                  color: colors.text,
+                }}
+              >
+                Show everything behind skeletons
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Switch on={showGrid} onClick={() => setShowGrid((v) => !v)} />
+              <span
+                style={{
+                  fontFamily: font.family,
+                  fontSize: `${font.size.body}px`,
+                  lineHeight: `${font.lineHeight.body}px`,
+                  color: colors.text,
+                }}
+              >
+                Show grid
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default PortalSettings;

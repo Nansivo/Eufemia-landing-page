@@ -11,7 +11,7 @@ const ArrowIcon = () => (
 
 const CheckIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M3 8L6.5 11.5L13 4.5" stroke="#007272" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M3 8L6.5 11.5L13 4.5" stroke="#a5e1d2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
@@ -82,7 +82,7 @@ const DesignPage: React.FC = () => {
               borderRadius: "20px",
               fontSize: "13px",
               fontWeight: 500,
-              color: "#007272",
+              color: "#a5e1d2",
               marginBottom: "16px",
             }}
           >
@@ -92,7 +92,7 @@ const DesignPage: React.FC = () => {
             style={{
               fontSize: "42px",
               fontWeight: 700,
-              color: isDark ? "#fff" : "#1a1a1a",
+              color: isDark ? "#fff" : "#1c1c1e",
               marginBottom: "16px",
               lineHeight: 1.2,
               letterSpacing: "-0.5px",
@@ -118,7 +118,7 @@ const DesignPage: React.FC = () => {
         <div
           style={{
             padding: "32px",
-            background: isDark ? "#1a1a1a" : "#1a1a1a",
+            background: isDark ? "#1c1c1e" : "#1c1c1e",
             borderRadius: "16px",
             marginBottom: "48px",
           }}
@@ -165,7 +165,7 @@ const DesignPage: React.FC = () => {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: "#1c1c1e",
             marginBottom: "16px",
             letterSpacing: "-0.3px",
           }}
@@ -187,7 +187,7 @@ const DesignPage: React.FC = () => {
               style={{
                 display: "block",
                 padding: "20px",
-                background: isDark ? "#1a1a1a" : "#fff",
+                background: isDark ? "#1c1c1e" : "#fff",
                 border: `1px solid ${isDark ? "#333" : "#e8e8e8"}`,
                 borderRadius: "12px",
                 textDecoration: "none",
@@ -199,7 +199,7 @@ const DesignPage: React.FC = () => {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-                <h3 style={{ fontSize: "15px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", margin: 0 }}>
+                <h3 style={{ fontSize: "15px", fontWeight: 600, color: isDark ? "#fff" : "#1c1c1e", margin: 0 }}>
                   {library.name}
                 </h3>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ color: "#999" }}>
@@ -227,7 +227,7 @@ const DesignPage: React.FC = () => {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: "#1c1c1e",
             marginBottom: "24px",
             letterSpacing: "-0.3px",
           }}
@@ -250,7 +250,7 @@ const DesignPage: React.FC = () => {
                 <CheckIcon />
               </div>
               <div>
-                <h3 style={{ fontSize: "15px", fontWeight: 600, color: isDark ? "#fff" : "#1a1a1a", marginBottom: "4px" }}>
+                <h3 style={{ fontSize: "15px", fontWeight: 600, color: isDark ? "#fff" : "#1c1c1e", marginBottom: "4px" }}>
                   {practice.title}
                 </h3>
                 <p style={{ fontSize: "14px", color: isDark ? "#999" : "#666", lineHeight: 1.5, margin: 0 }}>
@@ -265,7 +265,7 @@ const DesignPage: React.FC = () => {
         <div
           style={{
             padding: "32px",
-            background: "linear-gradient(135deg, #007272 0%, #009999 100%)",
+            background: "linear-gradient(135deg, #a5e1d2 0%, #a5e1d2 100%)",
             borderRadius: "16px",
           }}
         >
@@ -284,7 +284,7 @@ const DesignPage: React.FC = () => {
               padding: "12px 24px",
               background: "#fff",
               borderRadius: "8px",
-              color: "#007272",
+              color: "#a5e1d2",
               textDecoration: "none",
               fontSize: "14px",
               fontWeight: 500,

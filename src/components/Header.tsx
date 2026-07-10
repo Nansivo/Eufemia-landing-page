@@ -1,17 +1,53 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "gatsby";
 import SearchModal from "./SearchModal";
+import PortalSettings from "./PortalSettings";
+import EufemiaWordmark from "./EufemiaWordmark";
 import { useTheme } from "../context/ThemeContext";
+import { radius, font } from "../theme/tokens";
+
+export const NAV_HEIGHT = 64;
+
+const SearchIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <circle cx="6.75" cy="6.75" r="5" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+const SunIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.6" />
+    <path
+      d="M12 2.5V4.5M12 19.5V21.5M21.5 12H19.5M4.5 12H2.5M18.72 5.28L17.3 6.7M6.7 17.3L5.28 18.72M18.72 18.72L17.3 17.3M6.7 6.7L5.28 5.28"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const CogIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.6" />
+    <path
+      d="M12 2.5l1.2 2.1 2.4-.5.3 2.4 2.1 1.2-1 2.2 1 2.2-2.1 1.2-.3 2.4-2.4-.5L12 21.5l-1.2-2.1-2.4.5-.3-2.4-2.1-1.2 1-2.2-1-2.2 2.1-1.2.3-2.4 2.4.5L12 2.5z"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 const Header: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchCompareMode, setSearchCompareMode] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [searchHovered, setSearchHovered] = useState(false);
-  const [themeHovered, setThemeHovered] = useState(false);
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === 'dark';
+  const [sunHovered, setSunHovered] = useState(false);
+  const [cogHovered, setCogHovered] = useState(false);
+  const { colors, toggleTheme } = useTheme();
 
-  // Listen for cmd+k / ctrl+k keyboard shortcut
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -19,13 +55,10 @@ const Header: React.FC = () => {
         setSearchOpen(true);
       }
     };
-
-    // Listen for compare mode trigger
     const handleCompareMode = () => {
       setSearchCompareMode(true);
       setSearchOpen(true);
     };
-
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("openSearchCompare", handleCompareMode);
     return () => {
@@ -33,6 +66,20 @@ const Header: React.FC = () => {
       window.removeEventListener("openSearchCompare", handleCompareMode);
     };
   }, []);
+
+  const iconButton = (hovered: boolean): React.CSSProperties => ({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "36px",
+    height: "36px",
+    border: "none",
+    borderRadius: `${radius.md}px`,
+    background: hovered ? colors.surface : "transparent",
+    cursor: "pointer",
+    color: colors.text,
+    transition: "background 0.15s ease",
+  });
 
   return (
     <>
@@ -42,52 +89,32 @@ const Header: React.FC = () => {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 24px",
-          height: "56px",
-          borderBottom: `1px solid ${isDark ? '#333' : '#e8e8e8'}`,
-          background: isDark ? "rgba(10, 10, 10, 0.8)" : "rgba(255, 255, 255, 0.8)",
-          backdropFilter: "blur(12px)",
+          height: `${NAV_HEIGHT}px`,
+          borderBottom: `1px solid ${colors.strokeSubtle}`,
+          background: colors.pageBg,
           position: "fixed",
           top: 0,
           left: 0,
           right: 0,
           zIndex: 100,
+          fontFamily: font.family,
         }}
       >
         <Link
           to="/"
+          aria-label="Eufemia — home"
           style={{
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
-            gap: "10px",
-            fontSize: "15px",
-            fontWeight: 600,
-            color: isDark ? "#fff" : "#1a1a1a",
+            color: colors.text,
             textDecoration: "none",
-            letterSpacing: "-0.2px",
+            lineHeight: 0,
           }}
         >
-          {/* Logo mark */}
-          <div
-            style={{
-              width: "28px",
-              height: "28px",
-              borderRadius: "6px",
-              background: "linear-gradient(135deg, #007272 0%, #009999 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M8 2L2 5L8 8L14 5L8 2Z" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 11L8 14L14 11" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 8L8 11L14 8" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          Eufemia
+          <EufemiaWordmark height={22} />
         </Link>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <button
             onClick={() => setSearchOpen(true)}
             onMouseEnter={() => setSearchHovered(true)}
@@ -96,64 +123,40 @@ const Header: React.FC = () => {
               display: "flex",
               alignItems: "center",
               gap: "8px",
-              padding: "8px 14px",
-              border: `1px solid ${isDark ? '#555' : '#e0e0e0'}`,
-              borderRadius: "8px",
-              background: isDark
-                ? (searchHovered ? "#222" : "#1a1a1a")
-                : (searchHovered ? "#f5f5f5" : "#fff"),
+              padding: "10px 16px",
+              width: "194px",
+              border: `1px solid ${searchHovered ? colors.strokeAction : colors.strokeSubtle}`,
+              borderRadius: `${radius.lg}px`,
+              background: colors.surface,
               cursor: "pointer",
-              fontSize: "13px",
-              color: isDark ? "#999" : "#666",
-              boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
-              transition: "all 0.15s ease",
+              fontSize: `${font.size.body}px`,
+              color: colors.textMuted,
+              transition: "border-color 0.15s ease",
+              fontFamily: font.family,
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-            <span>Search...</span>
-            <kbd
-              style={{
-                padding: "2px 6px",
-                background: isDark ? "#222" : "#f0f0f0",
-                borderRadius: "4px",
-                fontSize: "11px",
-                color: isDark ? "#666" : "#999",
-                border: `1px solid ${isDark ? '#333' : '#e0e0e0'}`,
-                marginLeft: "4px",
-              }}
-            >
-              ⌘K
-            </kbd>
+            <SearchIcon />
+            <span>cmd + k</span>
           </button>
           <button
             onClick={toggleTheme}
-            onMouseEnter={() => setThemeHovered(true)}
-            onMouseLeave={() => setThemeHovered(false)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "36px",
-              height: "36px",
-              border: `1px solid ${isDark ? '#555' : '#e0e0e0'}`,
-              borderRadius: "8px",
-              background: isDark
-                ? (themeHovered ? "#222" : "#1a1a1a")
-                : (themeHovered ? "#f5f5f5" : "#fff"),
-              cursor: "pointer",
-              color: isDark ? "#999" : "#666",
-              boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
-              transition: "all 0.15s ease",
-            }}
-            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            onMouseEnter={() => setSunHovered(true)}
+            onMouseLeave={() => setSunHovered(false)}
+            style={iconButton(sunHovered)}
+            title="Toggle light / dark"
+            aria-label="Toggle light / dark"
           >
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-              <circle cx="10" cy="10" r="3" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M10 2V4M10 16V18M18 10H16M4 10H2M15.66 4.34L14.24 5.76M5.76 14.24L4.34 15.66M15.66 15.66L14.24 14.24M5.76 5.76L4.34 4.34" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
+            <SunIcon />
+          </button>
+          <button
+            onClick={() => setSettingsOpen(true)}
+            onMouseEnter={() => setCogHovered(true)}
+            onMouseLeave={() => setCogHovered(false)}
+            style={iconButton(cogHovered)}
+            title="Portal settings"
+            aria-label="Portal settings"
+          >
+            <CogIcon />
           </button>
         </div>
       </header>
@@ -166,6 +169,8 @@ const Header: React.FC = () => {
         }}
         initialCompareMode={searchCompareMode}
       />
+
+      <PortalSettings isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </>
   );
 };

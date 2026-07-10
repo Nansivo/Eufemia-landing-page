@@ -34,7 +34,7 @@ const CodeBlock: React.FC<{ code: string; language?: string }> = ({ code, langua
     <div
       style={{
         position: "relative",
-        background: "#1a1a1a",
+        background: "#1c1c1e",
         borderRadius: "8px",
         overflow: "hidden",
       }}
@@ -124,7 +124,7 @@ const DevelopPage: React.FC = () => {
               borderRadius: "20px",
               fontSize: "13px",
               fontWeight: 500,
-              color: "#007272",
+              color: "#a5e1d2",
               marginBottom: "16px",
             }}
           >
@@ -134,7 +134,7 @@ const DevelopPage: React.FC = () => {
             style={{
               fontSize: "42px",
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: "#1c1c1e",
               marginBottom: "16px",
               lineHeight: 1.2,
               letterSpacing: "-0.5px",
@@ -160,7 +160,7 @@ const DevelopPage: React.FC = () => {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: "#1c1c1e",
             marginBottom: "16px",
             letterSpacing: "-0.3px",
           }}
@@ -191,7 +191,7 @@ const DevelopPage: React.FC = () => {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: "#1c1c1e",
             marginBottom: "16px",
             letterSpacing: "-0.3px",
           }}
@@ -231,7 +231,7 @@ function App() {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: "#1c1c1e",
             marginBottom: "16px",
             letterSpacing: "-0.3px",
           }}
@@ -273,7 +273,7 @@ function MyComponent() {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: "#1c1c1e",
             marginBottom: "16px",
             letterSpacing: "-0.3px",
           }}
@@ -310,7 +310,7 @@ function MyComponent() {
               TS
             </div>
             <div>
-              <p style={{ fontSize: "14px", fontWeight: 500, color: "#1a1a1a", margin: 0 }}>
+              <p style={{ fontSize: "14px", fontWeight: 500, color: "#1c1c1e", margin: 0 }}>
                 Full TypeScript support included
               </p>
               <p style={{ fontSize: "13px", color: "#666", margin: "4px 0 0 0" }}>
@@ -334,7 +334,7 @@ function MyComponent() {
           style={{
             fontSize: "24px",
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: "#1c1c1e",
             marginBottom: "24px",
             letterSpacing: "-0.3px",
           }}
@@ -358,7 +358,7 @@ function MyComponent() {
                 transition: "all 0.15s ease",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#007272";
+                e.currentTarget.style.borderColor = "#a5e1d2";
                 e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)";
               }}
               onMouseLeave={(e) => {
@@ -367,14 +367,14 @@ function MyComponent() {
               }}
             >
               <div>
-                <h3 style={{ fontSize: "15px", fontWeight: 600, color: "#007272", marginBottom: "4px" }}>
+                <h3 style={{ fontSize: "15px", fontWeight: 600, color: "#a5e1d2", marginBottom: "4px" }}>
                   {step.title}
                 </h3>
                 <p style={{ fontSize: "13px", color: "#666", margin: 0 }}>
                   {step.description}
                 </p>
               </div>
-              <div style={{ color: "#007272" }}>
+              <div style={{ color: "#a5e1d2" }}>
                 <ArrowIcon />
               </div>
             </Link>
