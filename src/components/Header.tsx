@@ -15,18 +15,6 @@ const SearchIcon = () => (
   </svg>
 );
 
-const SunIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-    <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.6" />
-    <path
-      d="M12 2.5V4.5M12 19.5V21.5M21.5 12H19.5M4.5 12H2.5M18.72 5.28L17.3 6.7M6.7 17.3L5.28 18.72M18.72 18.72L17.3 17.3M6.7 6.7L5.28 5.28"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
 const CogIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
     <path
@@ -44,9 +32,8 @@ const Header: React.FC = () => {
   const [searchCompareMode, setSearchCompareMode] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [searchHovered, setSearchHovered] = useState(false);
-  const [sunHovered, setSunHovered] = useState(false);
   const [cogHovered, setCogHovered] = useState(false);
-  const { colors, toggleTheme } = useTheme();
+  const { colors } = useTheme();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -137,16 +124,6 @@ const Header: React.FC = () => {
           >
             <SearchIcon />
             <span>cmd + k</span>
-          </button>
-          <button
-            onClick={toggleTheme}
-            onMouseEnter={() => setSunHovered(true)}
-            onMouseLeave={() => setSunHovered(false)}
-            style={iconButton(sunHovered)}
-            title="Toggle light / dark"
-            aria-label="Toggle light / dark"
-          >
-            <SunIcon />
           </button>
           <button
             onClick={() => setSettingsOpen(true)}
