@@ -5,9 +5,9 @@
   "description": "Eufemia Design System Portal - Expanded Landing Page Prototype",
   "scripts": {
     "develop": "gatsby develop",
-    "start": "gatsby develop",
+    "start": "gatsby serve -H 0.0.0.0 -p ${PORT:-9000}",
     "build": "gatsby build",
-    "serve": "gatsby serve",
+    "serve": "gatsby serve -H 0.0.0.0 -p ${PORT:-9000}",
     "clean": "gatsby clean",
     "typecheck": "tsc --noEmit",
     "fetch-components": "node scripts/fetch-components.js",
