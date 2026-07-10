@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, navigate } from "gatsby";
 import { useTheme } from "../context/ThemeContext";
+import { usePortalSettings } from "../context/SettingsContext";
 import { radius, font } from "../theme/tokens";
 import { NAV_HEIGHT } from "./Header";
 
@@ -81,21 +82,28 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ currentPlatform = null, currentPath = "" }) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
   const { colors } = useTheme();
+  const { docPlatform, setDocPlatform } = usePortalSettings();
+
+  // Sync the persisted selection from the URL only on actual docs pages, so
+  // visiting About / Getting started doesn't reset the chosen platform.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const m = window.location.pathname.match(/\/docs\/(web|ios|android)\b/);
+    if (m) setDocPlatform(m[1] as "web" | "ios" | "android");
+  }, []);
 
   const navItems =
-    currentPlatform === "web"
+    docPlatform === "web"
       ? webNavItems
-      : currentPlatform === "ios"
+      : docPlatform === "ios"
       ? iosNavItems
-      : currentPlatform === "android"
+      : docPlatform === "android"
       ? androidNavItems
       : [];
 
   const platformLabels: Record<string, string> = { web: "Web", ios: "iOS", android: "Android" };
-  const displayLabel = currentPlatform ? platformLabels[currentPlatform] : "Select platform";
 
   // Figma uses colour-only selection (no pill): active = #e4eed7 + arrow icon,
   // others = mint. Hover only nudges brightness.
@@ -180,76 +188,44 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPlatform = null, currentPath =
           })()}
         </nav>
 
-        {/* Platform selector */}
-        <div style={{ position: "relative" }}>
-          <div style={{ fontSize: `${font.size.body}px`, lineHeight: `${font.lineHeight.body}px`, color: colors.text, marginBottom: "7px" }}>
-            Platform
-          </div>
-          <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "4px 16px",
-              border: `1px solid ${colors.strokeAction}`,
-              borderRadius: `${radius.sm}px`,
-              background: colors.surface,
-              cursor: "pointer",
-              fontFamily: font.family,
-              fontSize: `${font.size.body}px`,
-              lineHeight: `${font.lineHeight.body}px`,
-              color: colors.accent,
-            }}
-          >
-            {displayLabel}
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ transform: dropdownOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s ease" }}>
-              <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          {dropdownOpen && (
-            <div
-              style={{
-                position: "absolute",
-                top: "calc(100% + 4px)",
-                left: 0,
-                right: 0,
-                background: colors.surface,
-                border: `1px solid ${colors.strokeSubtle}`,
-                borderRadius: `${radius.md}px`,
-                boxShadow: "0 4px 16px rgba(0, 0, 0, 0.3)",
-                zIndex: 10,
-                overflow: "hidden",
-              }}
-            >
-              {(["web", "ios", "android"] as ("web" | "ios" | "android")[]).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => {
-                    setDropdownOpen(false);
-                    if (p === "web") window.open("https://eufemia.dnb.no/uilib/", "_blank");
-                    else navigate(p === "ios" ? "/docs/ios" : "/docs/android");
-                  }}
-                  onMouseEnter={() => setHovered(`platform-${p}`)}
-                  onMouseLeave={() => setHovered(null)}
-                  style={{
-                    width: "100%",
-                    padding: "8px 16px",
-                    border: "none",
-                    background: currentPlatform === p ? colors.selectedSubtle : hovered === `platform-${p}` ? colors.surfaceAlt : "transparent",
-                    cursor: "pointer",
-                    fontFamily: font.family,
-                    fontSize: `${font.size.body}px`,
-                    color: currentPlatform === p ? colors.textSelected : colors.accent,
-                    textAlign: "left",
-                  }}
-                >
-                  {platformLabels[p]}
-                </button>
-              ))}
-            </div>
-          )}
+        {/* Divider between the menu and the platform selector (full-width) */}
+        <div style={{ height: "1px", background: colors.strokeSubtle, width: "calc(100% + 48px)", marginLeft: "-24px", marginTop: "20px", marginBottom: "20px" }} />
+
+        {/* Platform selector — segmented pills */}
+        <div style={{ display: "flex", gap: "8px", marginTop: "-9px" }}>
+          {(["web", "ios", "android"] as ("web" | "ios" | "android")[]).map((p) => {
+            const active = docPlatform === p;
+            return (
+              <button
+                key={p}
+                onClick={() => {
+                  setDocPlatform(p);
+                  navigate(p === "web" ? "/docs/web" : p === "ios" ? "/docs/ios" : "/docs/android");
+                }}
+                onMouseEnter={() => setHovered(`platform-${p}`)}
+                onMouseLeave={() => setHovered(null)}
+                style={{
+                  padding: "8px 20px",
+                  borderRadius: `${radius.md}px`,
+                  border: `1px solid ${active ? colors.accent : colors.strokeSubtle}`,
+                  background: active
+                    ? colors.selectedSubtle
+                    : hovered === `platform-${p}`
+                    ? colors.surfaceAlt
+                    : colors.surface,
+                  cursor: "pointer",
+                  fontFamily: font.family,
+                  fontSize: `${font.size.body}px`,
+                  lineHeight: `${font.lineHeight.body}px`,
+                  fontWeight: active ? 500 : 400,
+                  color: active ? colors.textSelected : colors.accent,
+                  transition: "background 0.15s ease, border-color 0.15s ease",
+                }}
+              >
+                {platformLabels[p]}
+              </button>
+            );
+          })}
         </div>
 
         {/* Platform navigation */}
