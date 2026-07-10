@@ -5,6 +5,8 @@ import { useTheme } from "../context/ThemeContext";
 import { radius, font } from "../theme/tokens";
 import heroGlow from "../images/home/hero-glow.png";
 import heroGlowLight from "../images/home/hero-glow-light.png";
+import sbankenHeroGlow from "../images/home/sbanken-hero-glow.png";
+import sbankenHeroGlowLight from "../images/home/sbanken-hero-glow-light.png";
 
 // Staggered "fade-in-up" that mirrors the Figma card motion. It stays static
 // (fully visible) until the card is hovered, then plays once.
@@ -108,7 +110,17 @@ const updateItems = [
 const tabs = ["Web", "Android", "iOS"];
 
 const PortalHome: React.FC = () => {
-  const { colors, theme } = useTheme();
+  const { colors, theme, brand } = useTheme();
+
+  // Brand + theme specific hero glow.
+  const heroSrc =
+    brand === "Sbanken"
+      ? theme === "dark"
+        ? sbankenHeroGlow
+        : sbankenHeroGlowLight
+      : theme === "dark"
+      ? heroGlow
+      : heroGlowLight;
   const [tab, setTab] = useState("Web");
   const [hoverCard, setHoverCard] = useState<string | null>(null);
   const [moreHover, setMoreHover] = useState<string | null>(null);
@@ -117,7 +129,11 @@ const PortalHome: React.FC = () => {
 
   // Cards invert between themes (Figma): bright green on dark, dark navy on light.
   const cardTheme =
-    theme === "dark"
+    brand === "Sbanken"
+      ? theme === "dark"
+        ? { design: "#d9b3ff", develop: "#ecd9ff", text: "#333333", stroke: "#6b2c91", developStroke: "#8a5cad" }
+        : { design: "#2a0e3a", develop: "#3d1259", text: "#ffffff", stroke: "#c9a3e6", developStroke: "#c9a3e6" }
+      : theme === "dark"
       ? { design: "#99ff9a", develop: "#deffcd", text: "#333333", stroke: "#007272", developStroke: "#4a948d" }
       : { design: "#0e1e26", develop: "#003842", text: "#ffffff", stroke: "#a5e1d2", developStroke: "#a5e1d2" };
 
@@ -129,7 +145,7 @@ const PortalHome: React.FC = () => {
             blended with `screen`; light: green→white raster blended with
             `multiply` — both drop their base colour into the page seamlessly. */}
         <img
-          src={theme === "dark" ? heroGlow : heroGlowLight}
+          src={heroSrc}
           alt=""
           aria-hidden
           style={{
