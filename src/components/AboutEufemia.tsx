@@ -34,7 +34,7 @@ const sections: Section[] = [
     ],
   },
   {
-    title: "For everyone",
+    title: "Accessibility",
     step: "Accessibility",
     blocks: [
       { type: "p", text: "With Eufemia, DNB can continually increase product quality for both visual users and users relying on assistive technologies. It follows industry and regulatory standards-UU Tilsynet and WCAG 2.1." },
