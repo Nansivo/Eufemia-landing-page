@@ -4,6 +4,7 @@ import Layout from "./Layout";
 import { useTheme } from "../context/ThemeContext";
 import { radius, font } from "../theme/tokens";
 import heroGlow from "../images/home/hero-glow.png";
+import heroGlowLight from "../images/home/hero-glow-light.png";
 
 // Staggered "fade-in-up" that mirrors the Figma card motion. It stays static
 // (fully visible) until the card is hovered, then plays once.
@@ -36,52 +37,52 @@ const Piece: React.FC<{ delay: number; children: React.ReactNode }> = ({ delay, 
   </g>
 );
 
-const DesignGraphic = ({ playing }: { playing: boolean }) => (
+const DesignGraphic = ({ playing, stroke }: { playing: boolean; stroke: string }) => (
   <svg className={playing ? "pieces--play" : ""} width="84" height="84" viewBox="0 0 84 84" fill="none" aria-hidden>
     <Piece delay={0}>
-      <circle cx="30" cy="52" r="18" fill="#007272" fillOpacity="0.25" />
+      <circle cx="30" cy="52" r="18" fill={stroke} fillOpacity="0.25" />
     </Piece>
     <Piece delay={0.09}>
-      <circle cx="46" cy="34" r="24" stroke="#007272" strokeWidth="1.5" />
+      <circle cx="46" cy="34" r="24" stroke={stroke} strokeWidth="1.5" />
     </Piece>
     <Piece delay={0.16}>
-      <circle cx="66" cy="16" r="8" fill="#007272" fillOpacity="0.45" />
+      <circle cx="66" cy="16" r="8" fill={stroke} fillOpacity="0.45" />
     </Piece>
     <Piece delay={0.24}>
-      <path d="M20 60 L40 34 L58 52" stroke="#007272" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M20 60 L40 34 L58 52" stroke={stroke} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </Piece>
     <Piece delay={0.32}>
-      <rect x="37" y="45" width="42" height="18" rx="4" stroke="#007272" strokeWidth="0.75" strokeDasharray="3 3" />
+      <rect x="37" y="45" width="42" height="18" rx="4" stroke={stroke} strokeWidth="0.75" strokeDasharray="3 3" />
     </Piece>
   </svg>
 );
 
-const DevelopGraphic = ({ playing }: { playing: boolean }) => (
+const DevelopGraphic = ({ playing, stroke }: { playing: boolean; stroke: string }) => (
   <svg className={playing ? "pieces--play" : ""} width="84" height="84" viewBox="0 0 84 84" fill="none" aria-hidden>
     <Piece delay={0.05}>
-      <rect x="2" y="30" width="78" height="50" rx="5" stroke="#4a948d" strokeWidth="0.75" strokeDasharray="3 3" />
+      <rect x="2" y="30" width="78" height="50" rx="5" stroke={stroke} strokeWidth="0.75" strokeDasharray="3 3" />
     </Piece>
     <Piece delay={0.08}>
-      <rect x="28" y="2" width="50" height="50" rx="5" stroke="#4a948d" strokeWidth="0.75" strokeDasharray="3 3" />
+      <rect x="28" y="2" width="50" height="50" rx="5" stroke={stroke} strokeWidth="0.75" strokeDasharray="3 3" />
     </Piece>
     <Piece delay={0.03}>
-      <circle cx="57" cy="20" r="9" fill="#007272" fillOpacity="0.4" />
+      <circle cx="57" cy="20" r="9" fill={stroke} fillOpacity="0.4" />
     </Piece>
     <Piece delay={0.22}>
-      <circle cx="57" cy="50" r="9" fill="#007272" fillOpacity="0.4" />
+      <circle cx="57" cy="50" r="9" fill={stroke} fillOpacity="0.4" />
     </Piece>
     <Piece delay={0.1}>
-      <path d="M57 29 V41" stroke="#4a948d" strokeWidth="1" strokeLinecap="round" />
+      <path d="M57 29 V41" stroke={stroke} strokeWidth="1" strokeLinecap="round" />
     </Piece>
     <Piece delay={0.15}>
-      <path d="M57 59 V71 M52 66 L57 71 L62 66" stroke="#4a948d" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M57 59 V71 M52 66 L57 71 L62 66" stroke={stroke} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
     </Piece>
   </svg>
 );
 
 const cards = [
-  { title: "Design", desc: "Figma UI kits and more", bg: "#99ff9a", to: "/docs/design", Graphic: DesignGraphic },
-  { title: "Develop", desc: "Get started with installation guides", bg: "#deffcd", to: "https://eufemia.dnb.no/uilib/getting-started/", Graphic: DevelopGraphic },
+  { title: "Design", desc: "Figma UI kits and more", to: "/docs/design", Graphic: DesignGraphic },
+  { title: "Develop", desc: "Get started with installation guides", to: "https://eufemia.dnb.no/uilib/getting-started/", Graphic: DevelopGraphic },
 ];
 
 const moreCols: string[][] = [
@@ -112,32 +113,35 @@ const PortalHome: React.FC = () => {
   const [hoverCard, setHoverCard] = useState<string | null>(null);
 
   const divider = <div style={{ height: "1px", width: "761px", maxWidth: "100%", background: colors.strokeSubtle }} />;
-  const cardTextDark = "#333333";
+
+  // Cards invert between themes (Figma): bright green on dark, dark navy on light.
+  const cardTheme =
+    theme === "dark"
+      ? { design: "#99ff9a", develop: "#deffcd", text: "#333333", stroke: "#007272", developStroke: "#4a948d" }
+      : { design: "#0e1e26", develop: "#003842", text: "#ffffff", stroke: "#a5e1d2", developStroke: "#a5e1d2" };
 
   return (
     <Layout currentPath="/" currentPlatform="web">
       <style>{cardMotionCSS}</style>
       <div style={{ position: "relative", fontFamily: font.family, color: colors.text, overflow: "hidden" }}>
-        {/* Real hero glow image (exported from Figma). It is an opaque
-            green→black raster, so blend it with the page (screen over the
-            black bg drops the black to nothing, leaving a seamless glow). */}
-        {theme === "dark" && (
-          <img
-            src={heroGlow}
-            alt=""
-            aria-hidden
-            style={{
-              position: "absolute",
-              top: "0",
-              left: "0",
-              width: "100%",
-              height: "auto",
-              mixBlendMode: "screen",
-              pointerEvents: "none",
-              userSelect: "none",
-            }}
-          />
-        )}
+        {/* Real hero glow image (exported from Figma). Dark: green→black raster
+            blended with `screen`; light: green→white raster blended with
+            `multiply` — both drop their base colour into the page seamlessly. */}
+        <img
+          src={theme === "dark" ? heroGlow : heroGlowLight}
+          alt=""
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "auto",
+            mixBlendMode: theme === "dark" ? "screen" : "multiply",
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+        />
 
         {/* Hero */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "144px 40px 0", textAlign: "center" }}>
@@ -155,7 +159,9 @@ const PortalHome: React.FC = () => {
         <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: "48px", padding: "127px 40px 80px" }}>
           {/* Cards */}
           <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-            {cards.map(({ title, desc, bg, to, Graphic }) => {
+            {cards.map(({ title, desc, to, Graphic }) => {
+              const bg = title === "Design" ? cardTheme.design : cardTheme.develop;
+              const graphicStroke = title === "Design" ? cardTheme.stroke : cardTheme.developStroke;
               const inner = (
                 <div
                   onMouseEnter={() => setHoverCard(title)}
@@ -179,10 +185,10 @@ const PortalHome: React.FC = () => {
                   }}
                 >
                   <div style={{ display: "flex", flexDirection: "column", width: "219px" }}>
-                    <span style={{ fontFamily: font.family, fontWeight: 500, fontSize: `${font.size.headingLg}px`, lineHeight: `${font.lineHeight.headingLg}px`, color: cardTextDark }}>{title}</span>
-                    <span style={{ fontFamily: font.family, fontSize: `${font.size.body}px`, lineHeight: `${font.lineHeight.body}px`, color: cardTextDark }}>{desc}</span>
+                    <span style={{ fontFamily: font.family, fontWeight: 500, fontSize: `${font.size.headingLg}px`, lineHeight: `${font.lineHeight.headingLg}px`, color: cardTheme.text }}>{title}</span>
+                    <span style={{ fontFamily: font.family, fontSize: `${font.size.body}px`, lineHeight: `${font.lineHeight.body}px`, color: cardTheme.text }}>{desc}</span>
                   </div>
-                  <Graphic playing={hoverCard === title} />
+                  <Graphic playing={hoverCard === title} stroke={graphicStroke} />
                 </div>
               );
               return to.startsWith("http") ? (
