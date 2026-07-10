@@ -110,6 +110,7 @@ const AboutEufemia: React.FC = () => {
   const [visible, setVisible] = useState<Set<number>>(() => new Set([0]));
   const [hl, setHl] = useState<{ top: number; height: number }>({ top: 0, height: 0 });
   const [track, setTrack] = useState<{ top: number; height: number }>({ top: 0, height: 0 });
+  const [hoverStep, setHoverStep] = useState<number | null>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
   const labelRefs = useRef<(HTMLElement | null)[]>([]);
   const railRef = useRef<HTMLDivElement | null>(null);
@@ -331,10 +332,13 @@ const AboutEufemia: React.FC = () => {
             <div style={{ display: "flex", flexDirection: "column", paddingLeft: "16px" }}>
               {sections.map((s, i) => {
                 const isActive = visible.has(i);
+                const isHover = hoverStep === i;
                 return (
                   <button
                     key={s.step}
                     onClick={() => scrollTo(i)}
+                    onMouseEnter={() => setHoverStep(i)}
+                    onMouseLeave={() => setHoverStep(null)}
                     style={{
                       display: "block",
                       width: "100%",
@@ -353,8 +357,9 @@ const AboutEufemia: React.FC = () => {
                         fontSize: `${font.size.bodyMedium}px`,
                         lineHeight: `${font.lineHeight.body}px`,
                         fontWeight: isActive ? 500 : 400,
-                        color: isActive ? colors.text : colors.textMuted,
-                        transition: "color 0.2s ease",
+                        color: isActive || isHover ? colors.text : colors.textMuted,
+                        transform: isHover ? "translateX(3px)" : "translateX(0)",
+                        transition: "color 0.15s ease, transform 0.15s ease",
                       }}
                     >
                       {s.step}
