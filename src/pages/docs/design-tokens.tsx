@@ -36,7 +36,7 @@ const DesignTokensPage: React.FC<PageProps> = ({ pageContext }) => {
 
   return (
     <Layout currentPlatform={platform} currentPath={platformPath}>
-      <div style={{ padding: '48px 40px', maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ padding: '72px 56px', maxWidth: '992px' }}>
         {/* Breadcrumb */}
         <div
           style={{

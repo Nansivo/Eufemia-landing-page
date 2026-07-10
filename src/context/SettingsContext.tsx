@@ -14,8 +14,8 @@ interface SettingsContextType {
   // it as "All platforms" (show everything).
   activePlatforms: Platform[];
   isAllPlatforms: boolean;
-  // The currently-selected docs platform (persists across navigation).
-  docPlatform: DocPlatform;
+  // The currently-selected docs platform. Null until the user chooses one.
+  docPlatform: DocPlatform | null;
   setDocPlatform: (p: DocPlatform) => void;
 }
 
@@ -25,7 +25,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [platforms, setPlatforms] = useState<PlatformState>(DEFAULT);
-  const [docPlatform, setDocPlatformState] = useState<DocPlatform>("web");
+  const [docPlatform, setDocPlatformState] = useState<DocPlatform | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -76,7 +76,7 @@ export const usePortalSettings = (): SettingsContextType => {
       togglePlatform: () => {},
       activePlatforms: ALL_PLATFORMS,
       isAllPlatforms: true,
-      docPlatform: "web",
+      docPlatform: null,
       setDocPlatform: () => {},
     };
   }

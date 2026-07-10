@@ -147,7 +147,7 @@ const ComparisonPage: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div style={{ padding: "48px 40px", maxWidth: "800px", textAlign: "center" }}>
+        <div style={{ padding: "72px 56px", maxWidth: "992px", textAlign: "center" }}>
           <p>Loading comparison...</p>
         </div>
       </Layout>
@@ -157,7 +157,7 @@ const ComparisonPage: React.FC = () => {
   if (error || !first || !second) {
     return (
       <Layout>
-        <div style={{ padding: "48px 40px", maxWidth: "800px", textAlign: "center" }}>
+        <div style={{ padding: "72px 56px", maxWidth: "992px", textAlign: "center" }}>
           <h2>Comparison not available</h2>
           <p style={{ color: "#666", marginBottom: "20px" }}>{error || "Components not found"}</p>
           <button
@@ -182,7 +182,7 @@ const ComparisonPage: React.FC = () => {
 
   return (
     <Layout>
-      <div style={{ padding: "32px 40px" }}>
+      <div style={{ padding: "72px 56px", maxWidth: "992px" }}>
         {/* Header */}
         <div style={{ marginBottom: "32px" }}>
           <div

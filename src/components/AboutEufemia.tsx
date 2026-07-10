@@ -175,9 +175,9 @@ const AboutEufemia: React.FC = () => {
 
   return (
     <Layout currentPath="/about" currentPlatform="web">
-      <div style={{ display: "flex", alignItems: "flex-start", gap: "160px", padding: "104px 72px", fontFamily: font.family, color: colors.text }}>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "160px", padding: "72px 56px", fontFamily: font.family, color: colors.text }}>
         {/* Content column */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "72px", flex: "1 1 0", minWidth: 0, maxWidth: "720px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "72px", flex: "1 1 0", minWidth: 0, maxWidth: "880px" }}>
           <h1
             style={{ margin: 0, fontFamily: font.family, fontWeight: 500, fontSize: `${font.size.h1}px`, lineHeight: `${font.lineHeight.h1}px`, color: colors.text }}
           >

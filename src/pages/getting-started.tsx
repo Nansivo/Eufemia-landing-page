@@ -174,7 +174,7 @@ const GettingStartedPage: React.FC = () => {
 
   return (
     <Layout currentPath="/getting-started" currentPlatform="web">
-      <div style={{ display: "flex", alignItems: "flex-start", gap: "160px", padding: "104px 72px" }}>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "160px", padding: "72px 56px" }}>
         <div
           style={{
             display: "flex",
@@ -182,7 +182,7 @@ const GettingStartedPage: React.FC = () => {
             gap: "48px",
             flex: "1 1 0",
             minWidth: 0,
-            maxWidth: "760px",
+            maxWidth: "880px",
             fontFamily: font.family,
             color: colors.text,
           }}
