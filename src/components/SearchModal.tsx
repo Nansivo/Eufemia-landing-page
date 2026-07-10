@@ -255,7 +255,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "15px", flex: 1, minWidth: 0 }}>
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style={{ color: colors.text, flexShrink: 0 }}>
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style={{ color: colors.accent, flexShrink: 0 }}>
               <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="1.6" />
               <path d="M13 13L17.5 17.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
