@@ -22,10 +22,10 @@ const CheckIcon = ({ color }: { color: string }) => (
 );
 
 const PortalSettings: React.FC<PortalSettingsProps> = ({ isOpen, onClose }) => {
-  const { colors, mode, setMode } = useTheme();
+  const { colors, mode, setMode, setBrand } = useTheme();
   const { platforms, togglePlatform } = usePortalSettings();
 
-  const [brand, setBrand] = React.useState("DNB");
+  const [brandLabel, setBrandLabel] = React.useState("DNB");
   const [language, setLanguage] = React.useState("Norsk");
   const [skeletons, setSkeletons] = React.useState(true);
   const [showGrid, setShowGrid] = React.useState(false);
@@ -239,7 +239,15 @@ const PortalSettings: React.FC<PortalSettingsProps> = ({ isOpen, onClose }) => {
           {labelBlock("Brand", helpText("theming", "https://eufemia.dnb.no/uilib/usage/customisation/theming/"))}
           <div style={chipRow}>
             {brands.map((b) => (
-              <ToggleButton key={b} label={b} selected={brand === b} onClick={() => setBrand(b)} />
+              <ToggleButton
+                key={b}
+                label={b}
+                selected={brandLabel === b}
+                onClick={() => {
+                  setBrandLabel(b);
+                  setBrand(b.startsWith("Sbanken") ? "Sbanken" : "DNB");
+                }}
+              />
             ))}
           </div>
         </div>

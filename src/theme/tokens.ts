@@ -4,6 +4,7 @@
 // uses the on-light equivalents so the theme toggle keeps working.
 
 export type ThemeName = "light" | "dark";
+export type BrandName = "DNB" | "Sbanken";
 
 export interface ColorTokens {
   // Surfaces
@@ -63,8 +64,30 @@ const light: ColorTokens = {
   actionAlt: "#a5a5a5",
 };
 
-export const colorsFor = (theme: ThemeName): ColorTokens =>
-  theme === "dark" ? dark : light;
+export const colorsFor = (theme: ThemeName, brand: BrandName = "DNB"): ColorTokens => {
+  const base = theme === "dark" ? dark : light;
+  if (brand !== "Sbanken") return base;
+  // Sbanken brand — purple accent overrides on the shared neutral surfaces.
+  return theme === "dark"
+    ? {
+        ...base,
+        accent: "#c9a3e6",
+        strokeAction: "#c9a3e6",
+        selectedSubtle: "#3a1a4d",
+        selected: "#e8d6f5",
+        textSelected: "#e8d6f5",
+        buttonStrokeSelected: "rgba(201, 163, 230, 0.4)",
+      }
+    : {
+        ...base,
+        accent: "#6b2c91",
+        strokeAction: "#6b2c91",
+        selectedSubtle: "#efe1f7",
+        selected: "#3d1259",
+        textSelected: "#3d1259",
+        buttonStrokeSelected: "rgba(107, 44, 145, 0.4)",
+      };
+};
 
 // Static, theme-independent scales -----------------------------------------
 
