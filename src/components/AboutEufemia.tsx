@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import Layout from "./Layout";
+import InPageRail from "./InPageRail";
 import { NAV_HEIGHT } from "./Header";
 import { useTheme } from "../context/ThemeContext";
 import { font } from "../theme/tokens";
@@ -12,14 +13,16 @@ type Block =
   | { type: "links"; items: { label: string; href: string }[] };
 
 interface Section {
+  id: string;
   title: string;
-  step: string; // label shown in the right-hand stepper
+  step: string; // label shown in the right-hand rail
   blocks: Block[];
 }
 
 // Exact copy from the Figma "Home" frame (About Eufemia) + expanded sections.
 const sections: Section[] = [
   {
+    id: "the-vision",
     title: "The vision",
     step: "The Vision",
     blocks: [
@@ -27,6 +30,7 @@ const sections: Section[] = [
     ],
   },
   {
+    id: "human-ai-ready",
     title: "Human & AI Ready",
     step: "Human & AI Ready",
     blocks: [
@@ -34,6 +38,7 @@ const sections: Section[] = [
     ],
   },
   {
+    id: "accessibility",
     title: "Accessibility",
     step: "Accessibility",
     blocks: [
@@ -42,6 +47,7 @@ const sections: Section[] = [
     ],
   },
   {
+    id: "please-contribute",
     title: "Please contribute",
     step: "Contribute",
     blocks: [
@@ -50,6 +56,7 @@ const sections: Section[] = [
     ],
   },
   {
+    id: "special-thanks",
     title: "Special thanks",
     step: "Special thanks",
     blocks: [
@@ -66,6 +73,7 @@ const sections: Section[] = [
     ],
   },
   {
+    id: "transparency",
     title: "Transparency",
     step: "Transparency",
     blocks: [
@@ -89,6 +97,7 @@ const sections: Section[] = [
     ],
   },
   {
+    id: "credits",
     title: "Credits",
     step: "Credits",
     blocks: [
@@ -107,68 +116,6 @@ const sections: Section[] = [
 
 const AboutEufemia: React.FC = () => {
   const { colors } = useTheme();
-  const [visible, setVisible] = useState<Set<number>>(() => new Set([0]));
-  const [hl, setHl] = useState<{ top: number; height: number }>({ top: 0, height: 0 });
-  const [track, setTrack] = useState<{ top: number; height: number }>({ top: 0, height: 0 });
-  const [hoverStep, setHoverStep] = useState<number | null>(null);
-  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
-  const labelRefs = useRef<(HTMLElement | null)[]>([]);
-  const railRef = useRef<HTMLDivElement | null>(null);
-
-  // Scroll-spy: highlight every step whose section is currently on screen,
-  // and size the rail's highlight segment to span those visible steps.
-  useEffect(() => {
-    const onScroll = () => {
-      const vh = window.innerHeight;
-      const topEdge = NAV_HEIGHT + 8;
-      const next = new Set<number>();
-      sectionRefs.current.forEach((el, i) => {
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        if (r.top < vh - 8 && r.bottom > topEdge) next.add(i);
-      });
-      if (next.size === 0) next.add(0);
-      setVisible((prev) => {
-        if (prev.size === next.size && [...next].every((n) => prev.has(n))) return prev;
-        return next;
-      });
-
-      const idxs = [...next];
-      const first = labelRefs.current[Math.min(...idxs)];
-      const last = labelRefs.current[Math.max(...idxs)];
-      const rail = railRef.current;
-      if (first && last && rail) {
-        // Use the text glyph bounds (Range) so the segment hugs the text,
-        // ignoring the line-height leading above/below the glyphs.
-        const base = rail.getBoundingClientRect().top;
-        const range = document.createRange();
-        const glyph = (el: HTMLElement) => {
-          range.selectNodeContents(el);
-          return range.getBoundingClientRect();
-        };
-        const fTop = glyph(first).top;
-        const lBottom = glyph(last).bottom;
-        const top = fTop - base;
-        const height = lBottom - fTop;
-        setHl((prev) => (prev.top === top && prev.height === height ? prev : { top, height }));
-
-        // Grey track spans the full list, first label top → last label bottom.
-        const all = labelRefs.current.filter(Boolean) as HTMLElement[];
-        if (all.length) {
-          const tTop = glyph(all[0]).top - base;
-          const tHeight = glyph(all[all.length - 1]).bottom - base - tTop;
-          setTrack((prev) => (prev.top === tTop && prev.height === tHeight ? prev : { top: tTop, height: tHeight }));
-        }
-      }
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
 
   const paraStyle: React.CSSProperties = {
     margin: 0,
@@ -176,14 +123,6 @@ const AboutEufemia: React.FC = () => {
     fontSize: `${font.size.body}px`,
     lineHeight: `${font.lineHeight.body}px`,
     color: colors.text,
-  };
-
-  const scrollTo = (i: number) => {
-    const el = sectionRefs.current[i];
-    if (el) {
-      const y = el.getBoundingClientRect().top + window.scrollY - (NAV_HEIGHT + 24);
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
   };
 
   const renderBlock = (b: Block, key: number) => {
@@ -194,14 +133,7 @@ const AboutEufemia: React.FC = () => {
         return (
           <h3
             key={key}
-            style={{
-              margin: 0,
-              fontFamily: font.family,
-              fontWeight: 500,
-              fontSize: `${font.size.lead}px`,
-              lineHeight: `${font.lineHeight.lead}px`,
-              color: colors.text,
-            }}
+            style={{ margin: 0, fontFamily: font.family, fontWeight: 500, fontSize: `${font.size.lead}px`, lineHeight: `${font.lineHeight.lead}px`, color: colors.text }}
           >
             {b.text}
           </h3>
@@ -243,55 +175,23 @@ const AboutEufemia: React.FC = () => {
 
   return (
     <Layout currentPath="/about" currentPlatform="web">
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          gap: "160px",
-          padding: "104px 72px",
-          fontFamily: font.family,
-          color: colors.text,
-        }}
-      >
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "160px", padding: "104px 72px", fontFamily: font.family, color: colors.text }}>
         {/* Content column */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "72px",
-            flex: "1 1 0",
-            minWidth: 0,
-            maxWidth: "720px",
-          }}
-        >
+        <div style={{ display: "flex", flexDirection: "column", gap: "72px", flex: "1 1 0", minWidth: 0, maxWidth: "720px" }}>
           <h1
-            style={{
-              margin: 0,
-              fontFamily: font.family,
-              fontWeight: 500,
-              fontSize: `${font.size.h1}px`,
-              lineHeight: `${font.lineHeight.h1}px`,
-              color: colors.text,
-            }}
+            style={{ margin: 0, fontFamily: font.family, fontWeight: 500, fontSize: `${font.size.h1}px`, lineHeight: `${font.lineHeight.h1}px`, color: colors.text }}
           >
             About Eufemia
           </h1>
 
-          {sections.map((s, i) => (
+          {sections.map((s) => (
             <section
-              key={s.title}
-              ref={(el) => (sectionRefs.current[i] = el)}
+              key={s.id}
+              id={s.id}
               style={{ display: "flex", flexDirection: "column", gap: "24px", scrollMarginTop: `${NAV_HEIGHT + 24}px` }}
             >
               <h2
-                style={{
-                  margin: 0,
-                  fontFamily: font.family,
-                  fontWeight: 500,
-                  fontSize: `${font.size.headingLg}px`,
-                  lineHeight: `${font.lineHeight.headingLg}px`,
-                  color: colors.text,
-                }}
+                style={{ margin: 0, fontFamily: font.family, fontWeight: 500, fontSize: `${font.size.headingLg}px`, lineHeight: `${font.lineHeight.headingLg}px`, color: colors.text }}
               >
                 {s.title}
               </h2>
@@ -300,76 +200,7 @@ const AboutEufemia: React.FC = () => {
           ))}
         </div>
 
-        {/* Right-hand sticky rail nav ("on this page") */}
-        <nav
-          aria-label="On this page"
-          style={{
-            position: "sticky",
-            top: `${NAV_HEIGHT + 80}px`,
-            width: "289px",
-            flexShrink: 0,
-            padding: "16px 0",
-          }}
-        >
-          {/* Shared coordinate space so the rail lines up with the labels */}
-          <div ref={railRef} style={{ position: "relative" }}>
-            {/* Subtle track spanning the labels' text extent */}
-            <div style={{ position: "absolute", left: 0, top: `${track.top}px`, height: `${track.height}px`, width: "1px", background: colors.stroke }} />
-            {/* Bright segment spanning the visible steps */}
-            <div
-              style={{
-                position: "absolute",
-                left: 0,
-                width: "2px",
-                top: `${hl.top}px`,
-                height: `${hl.height}px`,
-                background: colors.accent,
-                transition: "top 0.2s ease, height 0.2s ease",
-              }}
-            />
-
-            {/* Labels */}
-            <div style={{ display: "flex", flexDirection: "column", paddingLeft: "16px" }}>
-              {sections.map((s, i) => {
-                const isActive = visible.has(i);
-                const isHover = hoverStep === i;
-                return (
-                  <button
-                    key={s.step}
-                    onClick={() => scrollTo(i)}
-                    onMouseEnter={() => setHoverStep(i)}
-                    onMouseLeave={() => setHoverStep(null)}
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      paddingBottom: "24px",
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      textAlign: "left",
-                    }}
-                  >
-                    <span
-                      ref={(el) => (labelRefs.current[i] = el)}
-                      style={{
-                        display: "inline-block",
-                        fontFamily: font.family,
-                        fontSize: `${font.size.bodyMedium}px`,
-                        lineHeight: `${font.lineHeight.body}px`,
-                        fontWeight: isActive ? 500 : 400,
-                        color: isActive || isHover ? colors.text : colors.textMuted,
-                        transform: isHover ? "translateX(3px)" : "translateX(0)",
-                        transition: "color 0.15s ease, transform 0.15s ease",
-                      }}
-                    >
-                      {s.step}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </nav>
+        <InPageRail items={sections.map((s) => ({ id: s.id, label: s.step }))} />
       </div>
     </Layout>
   );
