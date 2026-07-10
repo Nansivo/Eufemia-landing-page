@@ -46,6 +46,9 @@ const config: GatsbyConfig = {
         theme_color: "#007272",
         display: "minimal-ui",
         icon: "src/images/icon.svg",
+        // We inject our own light/dark <link rel="icon"> tags in gatsby-ssr.js,
+        // so let the manifest plugin skip its single auto-generated favicon link.
+        include_favicon: false,
       },
     },
   ],

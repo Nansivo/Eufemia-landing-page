@@ -9,3 +9,16 @@ export const wrapRootElement = ({ element }) => (
     {element}
   </ThemeProvider>
 )
+
+// Single adaptive favicon: the SVG carries its own
+// @media (prefers-color-scheme: dark) rule to swap fill color.
+export const onRenderBody = ({ setHeadComponents }) => {
+  setHeadComponents([
+    <link
+      key="favicon"
+      rel="icon"
+      type="image/svg+xml"
+      href="/favicon.svg"
+    />,
+  ])
+}
