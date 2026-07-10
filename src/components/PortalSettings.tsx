@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
+import { usePortalSettings, ALL_PLATFORMS } from "../context/SettingsContext";
 import { radius, font, shadow } from "../theme/tokens";
 import { NAV_HEIGHT } from "./Header";
 
@@ -22,14 +23,10 @@ const CheckIcon = ({ color }: { color: string }) => (
 
 const PortalSettings: React.FC<PortalSettingsProps> = ({ isOpen, onClose }) => {
   const { colors, mode, setMode } = useTheme();
+  const { platforms, togglePlatform } = usePortalSettings();
 
   const [brand, setBrand] = React.useState("DNB");
   const [language, setLanguage] = React.useState("Norsk");
-  const [platforms, setPlatforms] = React.useState<Record<string, boolean>>({
-    Web: false,
-    iOS: true,
-    Android: true,
-  });
   const [skeletons, setSkeletons] = React.useState(true);
   const [showGrid, setShowGrid] = React.useState(false);
 
@@ -283,13 +280,13 @@ const PortalSettings: React.FC<PortalSettingsProps> = ({ isOpen, onClose }) => {
             </span>
           )}
           <div style={chipRow}>
-            {["Web", "iOS", "Android"].map((p) => (
+            {ALL_PLATFORMS.map((p) => (
               <ToggleButton
                 key={p}
                 label={p}
                 checkbox
                 selected={platforms[p]}
-                onClick={() => setPlatforms((s) => ({ ...s, [p]: !s[p] }))}
+                onClick={() => togglePlatform(p)}
               />
             ))}
           </div>

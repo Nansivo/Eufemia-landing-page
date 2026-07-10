@@ -87,7 +87,7 @@ const ChangelogPage: React.FC = () => {
   const isDark = theme === 'dark';
   return (
     <Layout currentPath="/changelog">
-      <div style={{ padding: "48px 40px", maxWidth: "900px" }}>
+      <div style={{ padding: "72px 56px", maxWidth: "992px" }}>
         {/* Hero */}
         <div style={{ marginBottom: "48px" }}>
           <div

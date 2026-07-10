@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { navigate } from "gatsby";
 import { fetchComponentsForSearch, fetchTokensForSearch } from "../lib/sanity";
 import { useTheme } from "../context/ThemeContext";
+import { usePortalSettings, ALL_PLATFORMS, Platform } from "../context/SettingsContext";
+import { font, radius } from "../theme/tokens";
 
 interface SearchResult {
   title: string;
@@ -14,24 +16,15 @@ interface SearchResult {
 }
 
 const staticPages: SearchResult[] = [
-  // Pages
   { title: "Web Overview", description: "Overview of web components", path: "https://eufemia.dnb.no/uilib/", category: "Pages", external: true },
   { title: "Getting Started", description: "Start building with Eufemia", path: "/getting-started", category: "Pages" },
   { title: "About Eufemia", description: "Learn about the design system", path: "/about", category: "Pages" },
   { title: "Changelog", description: "Latest updates and releases", path: "/changelog", category: "Pages" },
-  // Guides - external links
   { title: "Typography", description: "Typography guidelines and styles", path: "https://eufemia.dnb.no/uilib/typography/", category: "Guides", external: true },
   { title: "Colors", description: "Eufemia color palette", path: "https://eufemia.dnb.no/uilib/usage/layout/colors/", category: "Guides", external: true },
   { title: "Icons", description: "Icon library and usage", path: "https://eufemia.dnb.no/icons/", category: "Guides", external: true },
   { title: "Spacing", description: "Layout spacing system", path: "https://eufemia.dnb.no/uilib/usage/layout/spacing/", category: "Guides", external: true },
   { title: "Theming", description: "Customize the look and feel", path: "https://eufemia.dnb.no/uilib/usage/customisation/theming/", category: "Guides", external: true },
-];
-
-const recentSearches = ["Button", "Typography", "Getting Started"];
-const quickActions = [
-  { label: "Browse Components", path: "https://eufemia.dnb.no/uilib/", external: true },
-  { label: "Start Designing", path: "/docs/design", external: false },
-  { label: "Start Developing", path: "https://eufemia.dnb.no/uilib/getting-started/", external: true },
 ];
 
 interface SearchModalProps {
@@ -40,51 +33,62 @@ interface SearchModalProps {
   initialCompareMode?: boolean;
 }
 
+// Derive the platform of a result from its category / path (null = platform-agnostic).
+const platformOf = (r: SearchResult): Platform | null => {
+  const s = `${r.category || ""} ${r.path || ""}`;
+  if (/\bios\b/i.test(s)) return "iOS";
+  if (/android/i.test(s)) return "Android";
+  if (/\bweb\b/i.test(s)) return "Web";
+  return null;
+};
+
+// Group heading with the platform word removed ("Web Components" -> "Components").
+const groupOf = (r: SearchResult): string =>
+  (r.category || "Results").replace(/\b(Web|iOS|Android)\b/gi, "").replace(/\s+/g, " ").trim() || "Results";
+
 const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompareMode = false }) => {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [cmsComponents, setCmsComponents] = useState<SearchResult[]>([]);
   const [cmsTokens, setCmsTokens] = useState<SearchResult[]>([]);
-  const [isLoadingCMS, setIsLoadingCMS] = useState(false);
   const [currentComponent, setCurrentComponent] = useState<{ platform: string; slug: string } | null>(null);
   const [isCompareMode, setIsCompareMode] = useState(false);
+  const [platformMenuOpen, setPlatformMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
+  const { colors, theme } = useTheme();
+  const { platforms, togglePlatform, activePlatforms, isAllPlatforms } = usePortalSettings();
+  const isDark = theme === "dark";
 
-  // Detect if user is trying to enter compare mode
+  const subtle = isDark ? "#2c2c2e" : "#f2f2f5"; // token-color-background-neutral-subtle
+  const badgeColors: Record<Platform, { bg: string; fg: string }> = {
+    Web: { bg: subtle, fg: colors.text },
+    iOS: { bg: "#dff2ff", fg: "#333333" },
+    Android: { bg: "#e0ffe7", fg: "#333333" },
+  };
+
   const isCompareModeQuery = query.toLowerCase().startsWith("/compare");
   const searchQuery = isCompareModeQuery ? query.slice(8).trim() : query;
 
-  // Update compare mode based on query - activate as soon as /compare is typed
   useEffect(() => {
-    const newIsCompareMode = (isCompareModeQuery || initialCompareMode) && currentComponent !== null;
-    setIsCompareMode(newIsCompareMode);
+    setIsCompareMode((isCompareModeQuery || initialCompareMode) && currentComponent !== null);
   }, [isCompareModeQuery, currentComponent, initialCompareMode]);
 
   const searchableContent: SearchResult[] = [...cmsComponents, ...cmsTokens, ...staticPages];
 
-  // Mark current page
   if (currentComponent) {
     const currentPath = `/docs/${currentComponent.platform}/components/${currentComponent.slug}`;
-    searchableContent.forEach(item => {
-      if (item.path === currentPath) {
-        item.isCurrentPage = true;
-      }
+    searchableContent.forEach((item) => {
+      if (item.path === currentPath) item.isCurrentPage = true;
     });
   }
 
-  // Filter results based on mode
   let filteredResults: SearchResult[];
-
   if (isCompareModeQuery && !searchQuery.trim()) {
-    // In compare mode with no search term, show all components
     filteredResults = searchableContent;
   } else if (query.length > 0) {
-    // Normal search mode or compare mode with search term
     filteredResults = searchableContent.filter(
-      item =>
+      (item) =>
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.category.toLowerCase().includes(searchQuery.toLowerCase())
@@ -93,68 +97,48 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
     filteredResults = [];
   }
 
-  // In compare mode, only show iOS and Android components (but exclude current component)
   if (isCompareMode) {
-    filteredResults = filteredResults.filter(
-      item => {
-        const isComponentType = item.category.includes("iOS Components") || item.category.includes("Android Components");
-        const isNotCurrentComponent = !item.isCurrentPage;
-        return isComponentType && isNotCurrentComponent;
-      }
-    );
+    filteredResults = filteredResults.filter((item) => {
+      const isComponentType = item.category.includes("iOS Components") || item.category.includes("Android Components");
+      return isComponentType && !item.isCurrentPage;
+    });
+  } else {
+    // Filter by the platforms chosen in Portal Settings (platform-agnostic
+    // results always pass). "All platforms" means no filtering.
+    if (!isAllPlatforms) {
+      filteredResults = filteredResults.filter((item) => {
+        const p = platformOf(item);
+        return !p || activePlatforms.includes(p);
+      });
+    }
   }
 
-  // Group results by category
   const groupedResults = filteredResults.reduce((acc, item) => {
-    if (!acc[item.category]) acc[item.category] = [];
-    acc[item.category].push(item);
+    const g = groupOf(item);
+    (acc[g] = acc[g] || []).push(item);
     return acc;
   }, {} as Record<string, SearchResult[]>);
 
-  // Fetch CMS components on component mount and when modal opens
   useEffect(() => {
     if (!isOpen) return;
-
-    // Detect if we're on a component page
-    let detectedComponent: { platform: string; slug: string } | null = null;
-
+    let detected: { platform: string; slug: string } | null = null;
     if (typeof window !== "undefined") {
-      const path = window.location.pathname;
-      const match = path.match(/\/docs\/(ios|android)\/components\/([^\/]+)/);
-      if (match) {
-        const urlSlug = match[2];
-        detectedComponent = { platform: match[1], slug: urlSlug };
-      }
+      const m = window.location.pathname.match(/\/docs\/(ios|android)\/components\/([^/]+)/);
+      if (m) detected = { platform: m[1], slug: m[2] };
     }
-
-    const loadCMSComponents = async () => {
-      setIsLoadingCMS(true);
+    (async () => {
       try {
-        const [components, tokens] = await Promise.all([
-          fetchComponentsForSearch(),
-          fetchTokensForSearch(),
-        ]);
+        const [components, tokens] = await Promise.all([fetchComponentsForSearch(), fetchTokensForSearch()]);
         setCmsComponents(components);
         setCmsTokens(tokens);
-
-        // If we're on a component page, find the exact matching component
-        if (detectedComponent) {
-          const expectedPath = `/docs/${detectedComponent.platform}/components/${detectedComponent.slug}`;
-          const matchedComponent = components.find(
-            c => c.path === expectedPath || c.path === expectedPath + "/"
-          );
-          if (matchedComponent) {
-            setCurrentComponent(detectedComponent);
-          }
+        if (detected) {
+          const expected = `/docs/${detected.platform}/components/${detected.slug}`;
+          if (components.find((c) => c.path === expected || c.path === expected + "/")) setCurrentComponent(detected);
         }
-      } catch (error) {
-        console.error("Failed to load CMS components:", error);
-      } finally {
-        setIsLoadingCMS(false);
+      } catch (e) {
+        console.error("Failed to load CMS components:", e);
       }
-    };
-
-    loadCMSComponents();
+    })();
   }, [isOpen]);
 
   useEffect(() => {
@@ -165,405 +149,300 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, initialCompa
       setSelectedIndex(0);
     } else {
       setIsAnimating(false);
+      setPlatformMenuOpen(false);
     }
   }, [isOpen]);
+
+  const goTo = (result: SearchResult) => {
+    if (result.external) {
+      window.open(result.path, "_blank");
+    } else if (isCompareMode && currentComponent && result.category.includes("Components")) {
+      const m = result.path.match(/\/docs\/(ios|android)\/components\/([^/]+)/);
+      if (m) navigate(`/docs/comparison?first=${currentComponent.platform}/${currentComponent.slug}&second=${m[1]}/${m[2]}`);
+    } else {
+      navigate(result.path);
+    }
+    onClose();
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
-
-      if (e.key === "Escape") {
-        onClose();
-      } else if (e.key === "ArrowDown") {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowDown") {
         e.preventDefault();
-        setSelectedIndex(i => Math.min(i + 1, filteredResults.length - 1));
+        setSelectedIndex((i) => Math.min(i + 1, filteredResults.length - 1));
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
-        setSelectedIndex(i => Math.max(i - 1, 0));
+        setSelectedIndex((i) => Math.max(i - 1, 0));
       } else if (e.key === "Enter" && filteredResults[selectedIndex]) {
-        const result = filteredResults[selectedIndex];
-        if (result.external) {
-          window.open(result.path, "_blank");
-        } else {
-          // Only open comparison view if in compare mode
-          if (isCompareMode && currentComponent && result.category.includes("Components")) {
-            const firstParam = `${currentComponent.platform}/${currentComponent.slug}`;
-            const secondPath = result.path; // format: /docs/platform/components/slug
-            const match = secondPath.match(/\/docs\/(ios|android)\/components\/([^\/]+)/);
-            if (match) {
-              const secondParam = `${match[1]}/${match[2]}`;
-              navigate(`/docs/comparison?first=${firstParam}&second=${secondParam}`);
-            }
-          } else {
-            navigate(result.path);
-          }
-        }
-        onClose();
+        goTo(filteredResults[selectedIndex]);
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, filteredResults, selectedIndex, onClose]);
 
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [query]);
+  useEffect(() => setSelectedIndex(0), [query]);
 
   if (!isOpen) return null;
+
+  const platformLabel = isAllPlatforms ? "All platforms" : activePlatforms.join(", ");
+
+  // Render a component title with the matched substring emphasised.
+  const renderTitle = (title: string) => {
+    const q = searchQuery.trim();
+    const i = q ? title.toLowerCase().indexOf(q.toLowerCase()) : -1;
+    if (i < 0) return <span style={{ fontWeight: 400 }}>{title}</span>;
+    return (
+      <>
+        {title.slice(0, i) && <span style={{ fontWeight: 400 }}>{title.slice(0, i)}</span>}
+        <span style={{ fontWeight: 500 }}>{title.slice(i, i + q.length)}</span>
+        {title.slice(i + q.length) && <span style={{ fontWeight: 400 }}>{title.slice(i + q.length)}</span>}
+      </>
+    );
+  };
 
   let flatIndex = -1;
 
   return (
     <>
-      {/* Backdrop with blur */}
+      {/* Screen dimmer */}
       <div
         onClick={onClose}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0, 0, 0, 0.6)",
-          backdropFilter: "blur(8px)",
-          zIndex: 1000,
-          opacity: isAnimating ? 1 : 0,
-          transition: "opacity 0.2s ease",
-        }}
+        style={{ position: "fixed", inset: 0, background: "#000", opacity: isAnimating ? 0.32 : 0, zIndex: 1000, transition: "opacity 0.2s ease" }}
       />
 
-      {/* Modal */}
+      {/* Dialog */}
       <div
+        role="dialog"
+        aria-label="Search"
         style={{
           position: "fixed",
-          top: "12%",
+          top: "10%",
           left: "50%",
           transform: `translateX(-50%) ${isAnimating ? "translateY(0)" : "translateY(-10px)"}`,
           width: "100%",
-          maxWidth: "600px",
-          background: isDark ? "#1c1c1e" : "#fff",
-          borderRadius: "12px",
-          border: `1px solid ${isDark ? "#333" : "#e0e0e0"}`,
-          boxShadow: "0 16px 48px rgba(0, 0, 0, 0.15)",
+          maxWidth: "784px",
+          maxHeight: "80vh",
+          display: "flex",
+          flexDirection: "column",
+          gap: "32px",
+          padding: "48px",
+          boxSizing: "border-box",
+          background: colors.surface,
+          border: `1px solid ${colors.strokeSubtle}`,
+          borderRadius: `${radius.xl}px`,
+          boxShadow: "0px 8px 16px 0px rgba(51,51,51,0.24)",
           zIndex: 1001,
-          overflow: "hidden",
+          overflowY: "auto",
           opacity: isAnimating ? 1 : 0,
-          transition: "all 0.2s ease",
+          transition: "opacity 0.2s ease, transform 0.2s ease",
+          fontFamily: font.family,
         }}
       >
-
-        {/* Comparison mode indicator */}
-        {isCompareMode && (
-          <div
-            style={{
-              padding: "8px 20px",
-              background: "#e6f2f2",
-              borderBottom: "1px solid #d0e8e8",
-              fontSize: "13px",
-              color: "#a5e1d2",
-              fontWeight: 500,
-            }}
-          >
-            ↔ Comparing with: {currentComponent!.slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
-          </div>
-        )}
-
-        {/* Search input */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "16px 20px",
-            gap: "12px",
-          }}
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ color: "#888", flexShrink: 0 }}>
-            <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M13 13L17 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder={currentComponent ? "Type /compare to compare components..." : "Search components, guides, and more..."}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            style={{
-              flex: 1,
-              border: "none",
-              outline: "none",
-              fontSize: "16px",
-              color: isDark ? "#fff" : "#1c1c1e",
-              background: "transparent",
-            }}
-          />
-          <kbd
-            style={{
-              padding: "4px 8px",
-              background: "#f5f5f5",
-              borderRadius: "4px",
-              fontSize: "12px",
-              fontWeight: 500,
-              color: "#666",
-            }}
-          >
-            ESC
-          </kbd>
-        </div>
-
-        {/* Divider */}
-        <div style={{ height: "1px", background: "rgba(0, 0, 0, 0.06)" }} />
-
-        {/* Results */}
-        <div
-          style={{
-            maxHeight: "420px",
-            overflowY: "auto",
-          }}
-        >
-          {query.length === 0 ? (
-            <div style={{ padding: "16px 20px" }}>
-              {/* Quick Actions */}
-              <div style={{ marginBottom: "20px" }}>
-                <div style={{ fontSize: "11px", fontWeight: 600, color: "#888", textTransform: "uppercase", marginBottom: "10px", letterSpacing: "0.5px" }}>
-                  Quick Actions
-                </div>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  {quickActions.map((action) => (
-                    <button
-                      key={action.path}
-                      onClick={() => {
-                        if (action.external) {
-                          window.open(action.path, "_blank");
-                        } else {
-                          navigate(action.path);
-                        }
-                        onClose();
-                      }}
-                      style={{
-                        padding: "8px 14px",
-                        background: isDark ? "#222" : "#f5f5f5",
-                        border: "none",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                        fontSize: "13px",
-                        fontWeight: 500,
-                        color: isDark ? "#ddd" : "#333",
-                        transition: "background 0.15s ease",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = isDark ? "#333" : "#eee";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#f5f5f5";
-                      }}
-                    >
-                      {action.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Recent Searches */}
-              <div>
-                <div style={{ fontSize: "11px", fontWeight: 600, color: "#888", textTransform: "uppercase", marginBottom: "10px", letterSpacing: "0.5px" }}>
-                  Recent Searches
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                  {recentSearches.map((search) => (
-                    <button
-                      key={search}
-                      onClick={() => setQuery(search)}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                        padding: "8px 10px",
-                        background: "transparent",
-                        border: "none",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                        color: isDark ? "#999" : "#555",
-                        textAlign: "left",
-                        transition: "background 0.15s ease",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#f5f5f5";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "transparent";
-                      }}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style={{ opacity: 0.4 }}>
-                        <path d="M8 14A6 6 0 108 2a6 6 0 000 12z" stroke="currentColor" strokeWidth="1.5"/>
-                        <path d="M8 4v4l2.5 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
-                      {search}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : filteredResults.length === 0 ? (
-            <div
-              style={{
-                padding: "40px 24px",
-                textAlign: "center",
-              }}
-            >
-              <div style={{ fontSize: "15px", fontWeight: 500, color: "#1c1c1e", marginBottom: "4px" }}>
-                No results found
-              </div>
-              <div style={{ fontSize: "14px", color: "#888" }}>
-                Try searching for something else
-              </div>
-            </div>
-          ) : (
-            <div style={{ padding: "8px 12px" }}>
-              {Object.entries(groupedResults).map(([category, items]) => (
-                <div key={category} style={{ marginBottom: "12px" }}>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      fontWeight: 600,
-                      color: isDark ? "#999" : "#888",
-                      textTransform: "uppercase",
-                      padding: "6px 8px",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
-                    {category}
-                  </div>
-                  {items.map((result) => {
-                    flatIndex++;
-                    const isSelected = flatIndex === selectedIndex;
-                    const currentIndex = flatIndex;
-
-                    return (
-                      <div
-                        key={result.id || result.path}
-                        onClick={() => {
-                          if (result.external) {
-                            window.open(result.path, "_blank");
-                          } else {
-                            // Handle comparison mode
-                            if (isCompareMode && currentComponent && result.category.includes("Components")) {
-                              const firstParam = `${currentComponent.platform}/${currentComponent.slug}`;
-                              const secondPath = result.path;
-                              const match = secondPath.match(/\/docs\/(ios|android)\/components\/([^\/]+)/);
-                              if (match) {
-                                const secondParam = `${match[1]}/${match[2]}`;
-                                navigate(`/docs/comparison?first=${firstParam}&second=${secondParam}`);
-                              }
-                            } else {
-                              navigate(result.path);
-                            }
-                          }
-                          onClose();
-                        }}
-                        onMouseEnter={() => setSelectedIndex(currentIndex)}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          gap: "12px",
-                          padding: "10px 12px",
-                          cursor: "pointer",
-                          background: isSelected ? "#f5f5f5" : "transparent",
-                          borderRadius: "6px",
-                          transition: "background 0.1s ease",
-                        }}
-                      >
-                        <div style={{ minWidth: 0 }}>
-                          <div
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: 500,
-                              color: isSelected ? "#a5e1d2" : "#1c1c1e",
-                              marginBottom: "2px",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "8px",
-                            }}
-                          >
-                            {result.title}
-                            {result.isCurrentPage && (
-                              <span
-                                style={{
-                                  fontSize: "11px",
-                                  fontWeight: 600,
-                                  padding: "2px 6px",
-                                  background: "#e6f2f2",
-                                  color: "#a5e1d2",
-                                  borderRadius: "3px",
-                                  whiteSpace: "nowrap",
-                                }}
-                              >
-                                Current
-                              </span>
-                            )}
-                          </div>
-                          <div
-                            style={{
-                              fontSize: "13px",
-                              color: isDark ? "#999" : "#888",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                            }}
-                          >
-                            {result.description}
-                          </div>
-                        </div>
-                        {isSelected && (
-                          <kbd
-                            style={{
-                              padding: "2px 6px",
-                              background: isDark ? "#333" : "#e8e8e8",
-                              borderRadius: "4px",
-                              fontSize: "11px",
-                              fontWeight: 500,
-                              color: isDark ? "#999" : "#666",
-                              flexShrink: 0,
-                            }}
-                          >
-                            Enter
-                          </kbd>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
+        {/* Search field + platform filter */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "10px 16px",
-            background: isDark ? "#1c1c1e" : "#fafafa",
-            borderTop: `1px solid ${isDark ? "#333" : "#eee"}`,
-            fontSize: "12px",
-            color: isDark ? "#999" : "#888",
+            gap: "16px",
+            padding: "12px 24px",
+            background: subtle,
+            border: `1px solid ${colors.stroke}`,
+            borderRadius: `${radius.lg}px`,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              <kbd style={{ padding: "2px 5px", background: isDark ? "#1c1c1e" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↑</kbd>
-              <kbd style={{ padding: "2px 5px", background: isDark ? "#1c1c1e" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↓</kbd>
-              Navigate
-            </span>
-            <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              <kbd style={{ padding: "2px 5px", background: isDark ? "#1c1c1e" : "#fff", borderRadius: "3px", border: `1px solid ${isDark ? "#444" : "#ddd"}`, fontSize: "11px" }}>↵</kbd>
-              Open
-            </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "15px", flex: 1, minWidth: 0 }}>
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style={{ color: colors.accent, flexShrink: 0 }}>
+              <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="1.6" />
+              <path d="M13 13L17.5 17.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder={currentComponent ? "Type /compare to compare components…" : "Search Eufemia…"}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              style={{
+                flex: 1,
+                minWidth: 0,
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                fontFamily: font.family,
+                fontSize: `${font.size.body}px`,
+                lineHeight: `${font.lineHeight.body}px`,
+                color: colors.text,
+              }}
+            />
           </div>
+
+          {/* Platform dropdown (controlled by Portal Settings) */}
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <button
+              onClick={() => setPlatformMenuOpen((o) => !o)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 16px",
+                background: colors.surface,
+                border: `1px solid ${colors.strokeSubtle}`,
+                borderRadius: `${radius.md}px`,
+                cursor: "pointer",
+                fontFamily: font.family,
+                fontSize: `${font.size.body}px`,
+                lineHeight: `${font.lineHeight.body}px`,
+                color: colors.text,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {platformLabel}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ transform: platformMenuOpen ? "rotate(180deg)" : "none", transition: "transform 0.15s ease" }}>
+                <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            {platformMenuOpen && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 6px)",
+                  right: 0,
+                  minWidth: "180px",
+                  background: colors.surface,
+                  border: `1px solid ${colors.strokeSubtle}`,
+                  borderRadius: `${radius.md}px`,
+                  boxShadow: "0px 8px 16px 0px rgba(0,0,0,0.24)",
+                  padding: "6px",
+                  zIndex: 2,
+                }}
+              >
+                {ALL_PLATFORMS.map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => togglePlatform(p)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      width: "100%",
+                      padding: "8px 10px",
+                      background: "transparent",
+                      border: "none",
+                      borderRadius: `${radius.sm}px`,
+                      cursor: "pointer",
+                      fontFamily: font.family,
+                      fontSize: `${font.size.body}px`,
+                      color: colors.text,
+                      textAlign: "left",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: `${radius.sm}px`,
+                        border: `1.5px solid ${platforms[p] ? colors.accent : colors.stroke}`,
+                        background: platforms[p] ? colors.accent : "transparent",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {platforms[p] && (
+                        <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                          <path d="M2.5 6.5L5 9L9.5 3.5" stroke={isDark ? "#0a0a0a" : "#ffffff"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </span>
+                    {p}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Results */}
+        {filteredResults.length === 0 ? (
+          <div style={{ padding: "8px 0", color: colors.textMuted, fontSize: `${font.size.body}px`, lineHeight: `${font.lineHeight.body}px` }}>
+            {query.length === 0 ? "Start typing to search components, guides and more." : "No results found."}
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+            {Object.entries(groupedResults).map(([group, items]) => (
+              <div key={group} style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ fontFamily: font.family, fontWeight: 500, fontSize: `${font.size.bodyMedium}px`, lineHeight: `${font.lineHeight.body}px`, color: colors.text }}>
+                  {group}
+                </div>
+                {items.map((result) => {
+                  flatIndex++;
+                  const isSelected = flatIndex === selectedIndex;
+                  const idx = flatIndex;
+                  const platform = platformOf(result);
+                  return (
+                    <div
+                      key={result.id || result.path}
+                      onClick={() => goTo(result)}
+                      onMouseEnter={() => setSelectedIndex(idx)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        padding: "4px 8px 4px 16px",
+                        marginLeft: "-8px",
+                        borderRadius: `${radius.sm}px`,
+                        cursor: "pointer",
+                        background: isSelected ? subtle : "transparent",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: font.family,
+                          fontSize: `${font.size.body}px`,
+                          lineHeight: `${font.lineHeight.body}px`,
+                          color: colors.accent,
+                          textDecoration: "underline",
+                          textUnderlineOffset: "2px",
+                        }}
+                      >
+                        {renderTitle(result.title)}
+                      </span>
+                      {platform && (
+                        <span
+                          style={{
+                            padding: "4px 8px",
+                            borderRadius: `${radius.md}px`,
+                            border: `1px solid ${colors.stroke}`,
+                            background: badgeColors[platform].bg,
+                            color: badgeColors[platform].fg,
+                            fontFamily: font.family,
+                            fontWeight: 500,
+                            fontSize: "14px",
+                            lineHeight: "20px",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {platform}
+                        </span>
+                      )}
+                      {result.isCurrentPage && (
+                        <span style={{ fontSize: "12px", color: colors.textMuted }}>Current</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Footer hint */}
+        <div style={{ fontFamily: font.family, fontWeight: 400, fontSize: `${font.size.small}px`, lineHeight: `${font.lineHeight.small}px`, color: colors.textMuted }}>
+          use <span style={{ color: colors.accent }}>/compare</span> command to compare iOS and Android components.
         </div>
       </div>
     </>
